@@ -1,0 +1,28 @@
+{
+    "name": "dust-helpers-intl",
+    "main": "lib/helpers.js",
+    "version": "0.0.1",
+    "homepage": "https://github.com/yahoo/dust-helpers-intl",
+
+    "authors": [
+        "Anthony Pipkin <a.pipkin@yahoo.com>"
+    ],
+
+    "description": "dust helpers for internationalization",
+
+    "keywords": [
+        "intl",
+        "i18n",
+        "dust"
+    ],
+
+    "license": "Yahoo BSD",
+
+    "ignore": [
+        "**/.*",
+        "coverage",
+        "node_modules",
+        "bower_components",
+        "tests"
+    ]
+}
