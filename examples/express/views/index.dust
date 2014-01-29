@@ -1,0 +1,14 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <strong>request locale:</strong> {locale} <br>
+        <ul>
+            <li><strong>from request:</strong> {@intlNumber val=NUM/}</li>
+{@intl locale="en"}
+            <li><strong>fixed to "en":</strong> {@intlNumber val=NUM/}</li>
+{/intl}
+            <li><strong>from request:</strong> {@intlNumber val=NUM/}</li>
+        </ul>
+    </body>
+</html>
