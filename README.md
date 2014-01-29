@@ -3,6 +3,9 @@ dust-helper-intl
 
 Dust helpers for internationalization.
 
+[![Build Status](https://travis-ci.org/yahoo/dust-helper-intl.png?branch=master)](https://travis-ci.org/yahoo/dust-helper-intl)
+
+
 ## Installation
 
 
