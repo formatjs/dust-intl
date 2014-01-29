@@ -36,7 +36,7 @@
     "grunt-contrib-uglify": "0.2.*",
     "intl": "*",
     "intl-messageformat": "git://github.com/yahoo/intl-messageformat.git#master",
-    "istanbul": "0.1.*",
+    "istanbul": "~0.2.4",
     "mocha": "1.15.*"
   },
   "scripts": {
