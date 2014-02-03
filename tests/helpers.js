@@ -455,79 +455,36 @@ describe('Helper `intl`', function () {
         expect(Dust.helpers.intl).to.be.a('function');
     });
 
-    it('should pass off to format a number', function () {
-        var name = 'intl0',
-            tmpl = '{@intl val=NUM locale="de-DE"/}',
+    it('should maintain a locale', function () {
+        var name = 'intl3',
+            tmpl = '{@intlNumber val=NUM/} {@intl locale="de-DE"}{@intlNumber val=NUM /}{/intl} {@intlNumber val=NUM/}',
             ctx = { NUM: 40000.004 },
-            expected = "40.000,004";
+            expected = '40,000.004 40.000,004 40,000.004';
         Dust.loadSource(Dust.compile(tmpl, name));
         Dust.render(name, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
-    it('should pass off to format a date', function (){
-        var name = 'intl1',
-            tmpl = '{@intl val=date /}',
-            ctx = {
-                date: new Date('Thu Jan 23 2014 18:00:44 GMT-0500 (EST)')
-            },
-            expected = "1/23/2014";
+    it('should maintain a currency', function () {
+        var name = 'intl4',
+            tmpl = '{@intlNumber val=NUM style="currency"/} {@intl currency="EUR"}{@intlNumber val=NUM style="currency"/}{/intl} {@intlNumber val=NUM style="currency"/}',
+            ctx = { NUM: 40000.004 },
+            expected = '$40,000.00 €40,000.00 $40,000.00';
         Dust.loadSource(Dust.compile(tmpl, name));
         Dust.render(name, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
-    it('should pass off to format a message', function () {
-        var name = 'intl2',
-            tmpl = '{#harvest} {@intl val=HARVEST_MSG person=person count=count /}{/harvest}',
-            ctx = {
-                HARVEST_MSG: '{person} harvested {count, plural, one {# apple} other {# apples}}.',
-                harvest: [
-                    { person: 'Allison', count: 10 },
-                    { person: 'Jeremy', count: 60 }
-                ]
-            },
-            expected = " Allison harvested 10 apples. Jeremy harvested 60 apples.";
+    it('should maintain context regardless of depth', function () {
+        var name = 'intl5',
+            tmpl = '{@intl locale="de-DE"}{@intl locale="en-US"}{@intlNumber val=NUM/} {/intl}{@intlNumber val=NUM/}{/intl} {@intlNumber val=NUM/}',
+            ctx = { NUM: 40000.004 },
+            expected = '40,000.004 40.000,004 40,000.004';
         Dust.loadSource(Dust.compile(tmpl, name));
         Dust.render(name, ctx, function(err, out) {
             expect(out).to.equal(expected);
-        });
-    });
-
-    describe('as a block helper', function () {
-        it('should maintain a locale', function () {
-            var name = 'intl3',
-                tmpl = '{@intl val=NUM/} {@intl locale="de-DE"}{@intl val=NUM /}{/intl} {@intl val=NUM/}',
-                ctx = { NUM: 40000.004 },
-                expected = '40,000.004 40.000,004 40,000.004';
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
-                expect(out).to.equal(expected);
-            });
-        });
-
-        it('should maintain a currency', function () {
-            var name = 'intl4',
-                tmpl = '{@intl val=NUM style="currency"/} {@intl currency="EUR"}{@intl val=NUM style="currency"/}{/intl} {@intl val=NUM style="currency"/}',
-                ctx = { NUM: 40000.004 },
-                expected = '$40,000.00 €40,000.00 $40,000.00';
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
-                expect(out).to.equal(expected);
-            });
-        });
-
-        it('should maintain context regardless of depth', function () {
-            var name = 'intl5',
-                tmpl = '{@intl locale="de-DE"}{@intl locale="en-US"}{@intl val=NUM/} {/intl}{@intl val=NUM/}{/intl} {@intl val=NUM/}',
-                ctx = { NUM: 40000.004 },
-                expected = '40,000.004 40.000,004 40,000.004';
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
-                expect(out).to.equal(expected);
-            });
         });
     });
 });
