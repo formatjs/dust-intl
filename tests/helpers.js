@@ -109,7 +109,7 @@ describe('Helper `intlNumber`', function () {
         describe('in another locale', function () {
             it('should return a string', function () {
                 var name = 'number5',
-                    tmpl = '{@intlNumber val=4 locale="de-DE" /}',
+                    tmpl = '{@intlNumber val=4 locales="de-DE" /}',
                     ctx = {},
                     expected = "4";
                 Dust.loadSource(Dust.compile(tmpl, name));
@@ -120,7 +120,7 @@ describe('Helper `intlNumber`', function () {
 
             it('should return a decimal as a string', function () {
                 var name = 'number5',
-                    tmpl = '{@intlNumber val=NUM locale="de-DE" /}',
+                    tmpl = '{@intlNumber val=NUM locales="de-DE" /}',
                     ctx = { NUM: 4.004 },
                     expected = "4,004";
                 Dust.loadSource(Dust.compile(tmpl, name));
@@ -131,7 +131,7 @@ describe('Helper `intlNumber`', function () {
 
             it('should return a formatted string with a thousand separator', function () {
                 var name = 'number5',
-                    tmpl = '{@intlNumber val=NUM locale="de-DE" /}',
+                    tmpl = '{@intlNumber val=NUM locales="de-DE" /}',
                     ctx = { NUM: 40000 },
                     expected = "40.000";
                 Dust.loadSource(Dust.compile(tmpl, name));
@@ -142,7 +142,7 @@ describe('Helper `intlNumber`', function () {
 
             it('should return a formatted string with a thousand separator and decimal', function () {
                 var name = 'number5',
-                    tmpl = '{@intlNumber val=NUM locale="de-DE" /}',
+                    tmpl = '{@intlNumber val=NUM locales="de-DE" /}',
                     ctx = { NUM: 40000.004 },
                     expected = "40.000,004";
                 Dust.loadSource(Dust.compile(tmpl, name));
@@ -229,7 +229,7 @@ describe('Helper `intlNumber`', function () {
 
         it('should return a currency even when using a different locale', function (){
             var name = 'number9',
-                tmpl = '{@intlNumber val=40000 locale="de-DE" style="currency" currency=CURRENCY/}';
+                tmpl = '{@intlNumber val=40000 locales="de-DE" style="currency" currency=CURRENCY/}';
             Dust.loadSource(Dust.compile(tmpl, name));
             async.series([
                 function(taskDone) {
@@ -270,7 +270,7 @@ describe('Helper `intlNumber`', function () {
 
         it('should return a perctage when using a different locale', function () {
             var name = 'number11',
-                tmpl = '{@intlNumber val=400 locale="de-DE" style="percent"/}',
+                tmpl = '{@intlNumber val=400 locales="de-DE" style="percent"/}',
                 ctx = {},
                 expected = "40.000 %";
             Dust.loadSource(Dust.compile(tmpl, name));
@@ -412,7 +412,7 @@ describe('Helper `intlMessage`', function () {
 
     it('should return a formatted string with formatted numbers and dates in a different locale', function () {
         var name = 'message3',
-            tmpl = '{@intlMessage _msg=POP_MSG locale="de-DE" city=city population=population census_date=census_date timeZone=timeZone/}',
+            tmpl = '{@intlMessage _msg=POP_MSG locales="de-DE" city=city population=population census_date=census_date timeZone=timeZone/}',
             ctx = {
                 POP_MSG: '{city} has a population of {population, number, integer} as of {census_date, date, medium}.',
                 city: 'Atlanta',
@@ -457,7 +457,7 @@ describe('Helper `intl`', function () {
 
     it('should maintain a locale', function () {
         var name = 'intl3',
-            tmpl = '{@intlNumber val=NUM/} {@intl locale="de-DE"}{@intlNumber val=NUM /}{/intl} {@intlNumber val=NUM/}',
+            tmpl = '{@intlNumber val=NUM/} {@intl locales="de-DE"}{@intlNumber val=NUM /}{/intl} {@intlNumber val=NUM/}',
             ctx = { NUM: 40000.004 },
             expected = '40,000.004 40.000,004 40,000.004';
         Dust.loadSource(Dust.compile(tmpl, name));
@@ -479,7 +479,7 @@ describe('Helper `intl`', function () {
 
     it('should maintain context regardless of depth', function () {
         var name = 'intl5',
-            tmpl = '{@intl locale="de-DE"}{@intl locale="en-US"}{@intlNumber val=NUM/} {/intl}{@intlNumber val=NUM/}{/intl} {@intlNumber val=NUM/}',
+            tmpl = '{@intl locales="de-DE"}{@intl locales="en-US"}{@intlNumber val=NUM/} {/intl}{@intlNumber val=NUM/}{/intl} {@intlNumber val=NUM/}',
             ctx = { NUM: 40000.004 },
             expected = '40,000.004 40.000,004 40,000.004';
         Dust.loadSource(Dust.compile(tmpl, name));
