@@ -373,14 +373,14 @@ describe('Helper `intlMessage`', function () {
             Dust.loadSource(Dust.compile(tmpl, name));
             Dust.render(name);
         } catch (e) {
-            var err = new ReferenceError('A string must be provided.');
+            var err = new ReferenceError('A message name or string must be provided.');
             expect(e.toString()).to.equal(err.toString());
         }
     });
 
     it('should return a formatted string', function () {
         var name = 'message1',
-            tmpl = '{@intlMessage val=MSG firstName=firstName lastName=lastName /}',
+            tmpl = '{@intlMessage _msg=MSG firstName=firstName lastName=lastName /}',
             ctx = {
                 MSG: 'Hi, my name is {firstName} {lastName}.',
                 firstName: 'Anthony',
@@ -395,7 +395,7 @@ describe('Helper `intlMessage`', function () {
 
     it('should return a formatted string with formatted numbers and dates', function () {
         var name = 'message2',
-            tmpl = '{@intlMessage val=POP_MSG city=city population=population census_date=census_date timeZone=timeZone/}',
+            tmpl = '{@intlMessage _msg=POP_MSG city=city population=population census_date=census_date timeZone=timeZone/}',
             ctx = {
                 POP_MSG: '{city} has a population of {population, number, integer} as of {census_date, date, medium}.',
                 city: 'Atlanta',
@@ -412,7 +412,7 @@ describe('Helper `intlMessage`', function () {
 
     it('should return a formatted string with formatted numbers and dates in a different locale', function () {
         var name = 'message3',
-            tmpl = '{@intlMessage val=POP_MSG locale="de-DE" city=city population=population census_date=census_date timeZone=timeZone/}',
+            tmpl = '{@intlMessage _msg=POP_MSG locale="de-DE" city=city population=population census_date=census_date timeZone=timeZone/}',
             ctx = {
                 POP_MSG: '{city} has a population of {population, number, integer} as of {census_date, date, medium}.',
                 city: 'Atlanta',
@@ -429,7 +429,7 @@ describe('Helper `intlMessage`', function () {
 
     it('should return a formatted string with an `each` block', function () {
         var name = 'message4',
-            tmpl = '{#harvest} {@intlMessage val=HARVEST_MSG person=person count=count /}{/harvest}',
+            tmpl = '{#harvest} {@intlMessage _msg=HARVEST_MSG person=person count=count /}{/harvest}',
             ctx = {
                 HARVEST_MSG: '{person} harvested {count, plural, one {# apple} other {# apples}}.',
                 harvest: [
@@ -482,6 +482,27 @@ describe('Helper `intl`', function () {
             tmpl = '{@intl locale="de-DE"}{@intl locale="en-US"}{@intlNumber val=NUM/} {/intl}{@intlNumber val=NUM/}{/intl} {@intlNumber val=NUM/}',
             ctx = { NUM: 40000.004 },
             expected = '40,000.004 40.000,004 40,000.004';
+        Dust.loadSource(Dust.compile(tmpl, name));
+        Dust.render(name, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should provide `messages` for intlMessage', function () {
+        var name = 'intl6',
+            tmpl = '{@intl messages=intl.messages}{#harvest} {@intlMessage _key="HARVEST_MSG" person=person count=count /}{/harvest}{/intl}',
+            ctx = {
+                intl: {
+                    messages: {
+                        HARVEST_MSG: '{person} harvested {count, plural, one {# apple} other {# apples}}.',
+                    }
+                },
+                harvest: [
+                    { person: 'Allison', count: 1 },
+                    { person: 'Jeremy', count: 60 }
+                ]
+            },
+            expected = " Allison harvested 1 apple. Jeremy harvested 60 apples.";
         Dust.loadSource(Dust.compile(tmpl, name));
         Dust.render(name, ctx, function(err, out) {
             expect(out).to.equal(expected);
