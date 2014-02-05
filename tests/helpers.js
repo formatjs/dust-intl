@@ -18,7 +18,7 @@ var async,
     expect,
     Dust,
     intl,
-    intlMsg,
+    IntlMessageFormat,
     // Use a fixed known date
     dateStr = 'Thu Jan 23 2014 18:00:44 GMT-0500 (EST)',
     timeStamp = 1390518044403;
@@ -36,7 +36,7 @@ if (typeof require === 'function') {
     }
 
     // load in message format
-    require('intl-messageformat');
+    IntlMessageFormat = require('intl-messageformat');
     require('intl-messageformat/locale-data/en');
 
     require('../lib/helpers.js').register(Dust);
@@ -458,6 +458,19 @@ describe('Helper `intlMessage`', function () {
             expect(out).to.equal(expected);
         });
     });
+
+    it('should use a precompiled message', function () {
+        var tmpl = '{@intlMessage _msg=MSG firstName=firstName lastName=lastName /}',
+            ctx = {
+                firstName: 'Anthony',
+                lastName: 'Pipkin'
+            },
+            expected = "Hi, my name is Anthony Pipkin.";
+        ctx.MSG = new IntlMessageFormat('Hi, my name is {firstName} {lastName}.');
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
 });
 
 
@@ -490,22 +503,37 @@ describe('Helper `intl`', function () {
         });
     });
 
-    it('should provide `messages` for intlMessage', function () {
-        var tmpl = '{@intl messages=intl.messages}{#harvest} {@intlMessage _key="HARVEST_MSG" person=person count=count /}{/harvest}{/intl}',
-            ctx = {
-                intl: {
-                    messages: {
-                        HARVEST_MSG: '{person} harvested {count, plural, one {# apple} other {# apples}}.',
-                    }
+    describe('should provide `messages` for intlMessage', function () {
+        it('strings', function () {
+            var tmpl = '{@intl messages=intl.messages}{#harvest} {@intlMessage _key="HARVEST_MSG" person=person count=count /}{/harvest}{/intl}',
+                ctx = {
+                    intl: {
+                        messages: {
+                            HARVEST_MSG: '{person} harvested {count, plural, one {# apple} other {# apples}}.',
+                        }
+                    },
+                    harvest: [
+                        { person: 'Allison', count: 1 },
+                        { person: 'Jeremy', count: 60 }
+                    ]
                 },
-                harvest: [
-                    { person: 'Allison', count: 1 },
-                    { person: 'Jeremy', count: 60 }
-                ]
-            },
-            expected = " Allison harvested 1 apple. Jeremy harvested 60 apples.";
-        Dust.renderSource(tmpl, ctx, function(err, out) {
-            expect(out).to.equal(expected);
+                expected = " Allison harvested 1 apple. Jeremy harvested 60 apples.";
+            Dust.renderSource(tmpl, ctx, function(err, out) {
+                expect(out).to.equal(expected);
+            });
+        });
+        it('precompiled object', function () {
+            var tmpl = '{@intl messages=intl.messages}{@intlMessage _key="salutation" firstName=firstName lastName=lastName /}{/intl}',
+                ctx = {
+                    intl: { messages: {} },
+                    firstName: 'Anthony',
+                    lastName: 'Pipkin'
+                },
+                expected = "Hi, my name is Anthony Pipkin.";
+            ctx.intl.messages.salutation = new IntlMessageFormat('Hi, my name is {firstName} {lastName}.');
+            Dust.renderSource(tmpl, ctx, function(err, out) {
+                expect(out).to.equal(expected);
+            });
         });
     });
 
