@@ -57,7 +57,7 @@ describe('Helper `intlNumber`', function () {
             Dust.loadSource(Dust.compile(tmpl, name));
             Dust.render(name);
         } catch (e) {
-            var err = new ReferenceError('A number must be provided.');
+            var err = new ReferenceError('@intlNumber needs a `val` parameter');
             expect(e.toString()).to.equal(err.toString());
         }
     });
@@ -298,7 +298,7 @@ describe('Helper `intlDate`', function () {
             Dust.loadSource(Dust.compile(tmpl, name));
             Dust.render(name);
         } catch (e) {
-            var err = new ReferenceError('A date or time stamp must be provided.');
+            var err = new ReferenceError('@intlDate needs a `val` parameter');
             expect(e.toString()).to.equal(err.toString());
         }
     });
@@ -373,7 +373,7 @@ describe('Helper `intlMessage`', function () {
             Dust.loadSource(Dust.compile(tmpl, name));
             Dust.render(name);
         } catch (e) {
-            var err = new ReferenceError('A message name or string must be provided.');
+            var err = new ReferenceError('@intlMessage needs either a `_msg` or `_key` parameter');
             expect(e.toString()).to.equal(err.toString());
         }
     });
@@ -466,10 +466,18 @@ describe('Helper `intl`', function () {
         });
     });
 
-    it('should maintain a currency', function () {
+    it('should define formats', function () {
         var name = 'intl4',
-            tmpl = '{@intlNumber val=NUM style="currency"/} {@intl currency="EUR"}{@intlNumber val=NUM style="currency"/}{/intl} {@intlNumber val=NUM style="currency"/}',
-            ctx = { NUM: 40000.004 },
+            tmpl = '{@intl formats=intl.formats}{@intlNumber val=NUM _fmt="usd"/} {@intlNumber val=NUM _fmt="eur"/} {@intlNumber val=NUM style="currency" currency="USD"/}{/intl}',
+            ctx = {
+                intl: {
+                    formats: {
+                        eur: { style: 'currency', currency: 'EUR' },
+                        usd: { style: 'currency', currency: 'USD' }
+                    }
+                },
+                NUM: 40000.004
+            },
             expected = '$40,000.00 €40,000.00 $40,000.00';
         Dust.loadSource(Dust.compile(tmpl, name));
         Dust.render(name, ctx, function(err, out) {
