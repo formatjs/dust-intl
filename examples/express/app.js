@@ -1,4 +1,4 @@
-var 
+var
     express     = require('express'),
     dust        = require('dustjs-linkedin'),
     consolidate = require('consolidate'),
@@ -20,10 +20,16 @@ app.set('port', 3000);
 
 // middleware for setting up the locale
 app.get('*', function(req, res, next) {
+    res.locals.intl = {};
+    res.locals.intl.messages = {
+        FROM: "from request: {num, number, integer}"
+    };
+
     //// This is the best approach...
-    //res.locals.locale = req.acceptedLanguages[0];
+    //res.locals.intl.locale = req.acceptedLanguages[0];
     //// ...but for our testing we'll fake a German user.
-    res.locals.locale = 'de-DE';
+    res.locals.intl.locale = 'de-DE'
+
     next();
 });
 

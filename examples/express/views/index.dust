@@ -1,14 +1,16 @@
+{@intl locales=intl.locale messages=intl.messages}
 <html>
     <head>
     </head>
     <body>
-        <strong>request locale:</strong> {locale} <br>
+        <strong>request locale:</strong> {intl.locale} <br>
         <ul>
-            <li><strong>from request:</strong> {@intlNumber val=NUM/}</li>
-{@intl locale="en"}
-            <li><strong>fixed to "en":</strong> {@intlNumber val=NUM/}</li>
+            <li>{@intlMessage _key="FROM" num=NUM/}</li>
+{@intl locales="en"}
+            <li>fixed to "en": {@intlNumber val=NUM/}</li>
 {/intl}
-            <li><strong>from request:</strong> {@intlNumber val=NUM/}</li>
+            <li>{@intlMessage _key="FROM" num=NUM/}</li>
         </ul>
     </body>
 </html>
+{/intl}
