@@ -6,9 +6,9 @@
         <strong>request locale:</strong> {intl.locale} <br>
         <ul>
             <li>{@intlMessage _key="FROM" num=NUM/}</li>
-{@intl locales="en"}
+            {@intl locales="en"}
             <li>fixed to "en": {@intlNumber val=NUM/}</li>
-{/intl}
+            {/intl}
             <li>{@intlMessage _key="FROM" num=NUM/}</li>
         </ul>
     </body>
