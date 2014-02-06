@@ -18,7 +18,11 @@ var async,
     expect,
     Dust,
     intl,
-    intlMsg;
+    IntlMessageFormat,
+    // Use a fixed known date
+    dateStr = 'Thu Jan 23 2014 18:00:44 GMT-0500 (EST)',
+    timeStamp = 1390518044403;
+
 
 if (typeof require === 'function') {
     async = require('async');
@@ -32,7 +36,7 @@ if (typeof require === 'function') {
     }
 
     // load in message format
-    require('intl-messageformat');
+    IntlMessageFormat = require('intl-messageformat');
     require('intl-messageformat/locale-data/en');
 
     require('../lib/helpers.js').register(Dust);
@@ -53,100 +57,111 @@ describe('Helper `intlNumber`', function () {
     it('should throw if called with out a value', function () {
         try {
             var name = 'number0',
-                tmpl = '{@intlNumber /}';
+                tmpl = '{@intlNumber /}',
+                ctx = {},
+                expected = new ReferenceError('@intlNumber needs a `val` parameter');
             Dust.loadSource(Dust.compile(tmpl, name));
             Dust.render(name);
         } catch (e) {
-            var err = new ReferenceError('A number must be provided.');
+            var err = new ReferenceError('@intlNumber needs a `val` parameter');
             expect(e.toString()).to.equal(err.toString());
         }
     });
 
     describe('used to format numbers', function () {
         it('should return a string', function () {
-            var name = 'number1',
-                tmpl = "{@intlNumber val=4 /}",
+            var tmpl = "{@intlNumber val=4 /}",
                 expected = "4";
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, {}, function(err, out) {
+            Dust.renderSource(tmpl, {}, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
 
         it('should return a decimal as a string', function () {
-            var name = 'number2',
-                tmpl = '{@intlNumber val=NUM /}',
+            var tmpl = '{@intlNumber val=NUM /}',
                 ctx = { NUM: 4.004 },
                 expected = "4.004";
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
+            Dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
 
         it('should return a formatted string with a thousand separator', function () {
-            var name = 'number3',
-                tmpl = '{@intlNumber val=NUM /}',
+            var tmpl = '{@intlNumber val=NUM /}',
                 ctx = { NUM: 40000 },
                 expected = "40,000";
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
+            Dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
 
         it('should return a formatted string with a thousand separator and decimal', function () {
-            var name = 'number4',
-                tmpl = '{@intlNumber val=NUM /}',
+            var tmpl = '{@intlNumber val=NUM /}',
                 ctx = { NUM: 40000.004 },
                 expected = "40,000.004";
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
+            Dust.renderSource(tmpl, ctx, function(err, out) {
+                expect(out).to.equal(expected);
+            });
+        });
+
+        it('should work wwith a value from context', function () {
+            var tmpl = '{@intlNumber val="{THOUSANDS}{HUNDREDS}" /}',
+                ctx = {
+                    THOUSANDS: '40',
+                    HUNDREDS: '000'
+                },
+                expected = "40,000";
+            Dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
 
         describe('in another locale', function () {
             it('should return a string', function () {
-                var name = 'number5',
-                    tmpl = '{@intlNumber val=4 locale="de-DE" /}',
+                var tmpl = '{@intlNumber val=4 locales="de-DE" /}',
                     ctx = {},
                     expected = "4";
-                Dust.loadSource(Dust.compile(tmpl, name));
-                Dust.render(name, ctx, function(err, out) {
+                Dust.renderSource(tmpl, ctx, function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
 
             it('should return a decimal as a string', function () {
-                var name = 'number5',
-                    tmpl = '{@intlNumber val=NUM locale="de-DE" /}',
+                var tmpl = '{@intlNumber val=NUM locales="de-DE" /}',
                     ctx = { NUM: 4.004 },
                     expected = "4,004";
-                Dust.loadSource(Dust.compile(tmpl, name));
-                Dust.render(name, ctx, function(err, out) {
+                Dust.renderSource(tmpl, ctx, function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
 
             it('should return a formatted string with a thousand separator', function () {
-                var name = 'number5',
-                    tmpl = '{@intlNumber val=NUM locale="de-DE" /}',
+                var tmpl = '{@intlNumber val=NUM locales="de-DE" /}',
                     ctx = { NUM: 40000 },
                     expected = "40.000";
-                Dust.loadSource(Dust.compile(tmpl, name));
-                Dust.render(name, ctx, function(err, out) {
+                Dust.renderSource(tmpl, ctx, function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
 
             it('should return a formatted string with a thousand separator and decimal', function () {
-                var name = 'number5',
-                    tmpl = '{@intlNumber val=NUM locale="de-DE" /}',
+                var tmpl = '{@intlNumber val=NUM locales="de-DE" /}',
                     ctx = { NUM: 40000.004 },
                     expected = "40.000,004";
-                Dust.loadSource(Dust.compile(tmpl, name));
-                Dust.render(name, ctx, function(err, out) {
+                Dust.renderSource(tmpl, ctx, function(err, out) {
+                    expect(out).to.equal(expected);
+                });
+            });
+
+            it('should work wwith a locale from context', function () {
+                var tmpl = '{@intlNumber val=NUM locales="{LANG}-{REGION}" /}',
+                    ctx = {
+                        NUM: 40000.004,
+                        LANG: 'de',
+                        REGION: 'DE'
+                    },
+                    expected = "40.000,004";
+                Dust.renderSource(tmpl, ctx, function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
@@ -211,8 +226,7 @@ describe('Helper `intlNumber`', function () {
         });
 
         it('should function within an `each` block helper', function () {
-            var name = 'number8',
-                tmpl = '{#currencies} {@intlNumber val=AMOUNT style="currency" currency=CURRENCY /}{/currencies}',
+            var tmpl = '{#currencies} {@intlNumber val=AMOUNT style="currency" currency=CURRENCY /}{/currencies}',
                 ctx = { 
                     currencies: [
                         { AMOUNT: 3, CURRENCY: 'USD' },
@@ -221,15 +235,14 @@ describe('Helper `intlNumber`', function () {
                     ]
                 },
                 expected = " $3.00 €8.00 ¥10";
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
+            Dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
 
         it('should return a currency even when using a different locale', function (){
             var name = 'number9',
-                tmpl = '{@intlNumber val=40000 locale="de-DE" style="currency" currency=CURRENCY/}';
+                tmpl = '{@intlNumber val=40000 locales="de-DE" style="currency" currency=CURRENCY/}';
             Dust.loadSource(Dust.compile(tmpl, name));
             async.series([
                 function(taskDone) {
@@ -254,27 +267,35 @@ describe('Helper `intlNumber`', function () {
                 throw err;
             });
         });
+
+        it('should work with a currency from context', function() {
+            var tmpl = '{@intlNumber val=AMOUNT style="currency" currency="{CURRENCY}" /}',
+                ctx = {
+                    AMOUNT: 40000.004,
+                    CURRENCY: 'EUR'
+                },
+                expected = "€40,000.00";
+            Dust.renderSource(tmpl, ctx, function(err, out) {
+                expect(out).to.equal(expected);
+            });
+        });
     });
 
     describe('used to format percentages', function () {
         it('should return a string formatted to a percent', function () {
-            var name = 'number10',
-                tmpl = '{@intlNumber val=400 style="percent"/}',
+            var tmpl = '{@intlNumber val=400 style="percent"/}',
                 ctx = {},
                 expected = "40,000%";
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
+            Dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
 
         it('should return a perctage when using a different locale', function () {
-            var name = 'number11',
-                tmpl = '{@intlNumber val=400 locale="de-DE" style="percent"/}',
+            var tmpl = '{@intlNumber val=400 locales="de-DE" style="percent"/}',
                 ctx = {},
                 expected = "40.000 %";
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
+            Dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -298,59 +319,61 @@ describe('Helper `intlDate`', function () {
             Dust.loadSource(Dust.compile(tmpl, name));
             Dust.render(name);
         } catch (e) {
-            var err = new ReferenceError('A date or time stamp must be provided.');
+            var err = new ReferenceError('@intlDate needs a `val` parameter');
             expect(e.toString()).to.equal(err.toString());
         }
     });
 
-    // Use a fixed known date
-    var dateStr = 'Thu Jan 23 2014 18:00:44 GMT-0500 (EST)',
-        timeStamp = 1390518044403;
-
     it('should return a formatted string (date)', function () {
-        var name = 'date1',
-            tmpl = '{@intlDate val="' + dateStr + '" /}',
+        var tmpl = '{@intlDate val="' + dateStr + '" /}',
             ctx = {},
             expected = "1/23/2014";
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, ctx, function(err, out) {
+        Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should return a formatted string (time)', function () {
-        var name = 'date2',
-            tmpl = '{@intlDate val=' + timeStamp + ' /}',
+        var tmpl = '{@intlDate val=' + timeStamp + ' /}',
             ctx = {},
             expected = "1/23/2014";
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, ctx, function(err, out) {
+        Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     /** SINGLE VALUES ARE MUTED FOR NOW :: https://github.com/andyearnshaw/Intl.js/issues/56
     it('should return a formatted string of option requested', function () {
-        var name = 'date3',
-            tmpl = '{@intlDate val=DATE year="numeric" /}',
+        var tmpl = '{@intlDate val=DATE year="numeric" /}',
             ctx = { DATE: dateStr },
             expected = "2014";
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, ctx, function(err, out) {
+        Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
     */
 
     it('should return a formatted string of just the time', function () {
-        var name = 'date3',
-            tmpl = '{@intlDate val=' + timeStamp + ' hour="numeric" minute="numeric" /}',
+        var tmpl = '{@intlDate val=' + timeStamp + ' hour="numeric" minute="numeric" /}',
             ctx = {},
             expected,   // "6:00 PM" EST or "3:00 PM" PST
             d = new Date(timeStamp);
         expected = (d.getHours() - 12) + ':00 PM';  // the actual value depends on the timezone where this test is run :(
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, ctx, function(err, out) {
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should work with format options from context', function () {
+        var tmpl = '{@intlDate val=' + timeStamp + ' hour=HOUR minute="{MINUTE}" /}',
+            ctx = {
+                HOUR: 'numeric',
+                MINUTE: 'numeric'
+            },
+            expected,   // "6:00 PM" EST or "3:00 PM" PST
+            d = new Date(timeStamp);
+        expected = (d.getHours() - 12) + ':00 PM';  // the actual value depends on the timezone where this test is run :(
+        Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -373,29 +396,26 @@ describe('Helper `intlMessage`', function () {
             Dust.loadSource(Dust.compile(tmpl, name));
             Dust.render(name);
         } catch (e) {
-            var err = new ReferenceError('A string must be provided.');
+            var err = new ReferenceError('@intlMessage needs either a `_msg` or `_key` parameter');
             expect(e.toString()).to.equal(err.toString());
         }
     });
 
     it('should return a formatted string', function () {
-        var name = 'message1',
-            tmpl = '{@intlMessage val=MSG firstName=firstName lastName=lastName /}',
+        var tmpl = '{@intlMessage _msg=MSG firstName=firstName lastName=lastName /}',
             ctx = {
                 MSG: 'Hi, my name is {firstName} {lastName}.',
                 firstName: 'Anthony',
                 lastName: 'Pipkin'
             },
             expected = "Hi, my name is Anthony Pipkin.";
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, ctx, function(err, out) {
+        Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should return a formatted string with formatted numbers and dates', function () {
-        var name = 'message2',
-            tmpl = '{@intlMessage val=POP_MSG city=city population=population census_date=census_date timeZone=timeZone/}',
+        var tmpl = '{@intlMessage _msg=POP_MSG city=city population=population census_date=census_date timeZone=timeZone/}',
             ctx = {
                 POP_MSG: '{city} has a population of {population, number, integer} as of {census_date, date, medium}.',
                 city: 'Atlanta',
@@ -404,15 +424,13 @@ describe('Helper `intlMessage`', function () {
                 timeZone: 'UTC'
             },
             expected = "Atlanta has a population of 5,475,213 as of Jan 1, 2010.";
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, ctx, function(err, out) {
+        Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should return a formatted string with formatted numbers and dates in a different locale', function () {
-        var name = 'message3',
-            tmpl = '{@intlMessage val=POP_MSG locale="de-DE" city=city population=population census_date=census_date timeZone=timeZone/}',
+        var tmpl = '{@intlMessage _msg=POP_MSG locales="de-DE" city=city population=population census_date=census_date timeZone=timeZone/}',
             ctx = {
                 POP_MSG: '{city} has a population of {population, number, integer} as of {census_date, date, medium}.',
                 city: 'Atlanta',
@@ -421,15 +439,13 @@ describe('Helper `intlMessage`', function () {
                 timeZone: 'UTC'
             },
             expected = "Atlanta has a population of 5.475.213 as of 1. Jan. 2010.";
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, ctx, function(err, out) {
+        Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should return a formatted string with an `each` block', function () {
-        var name = 'message4',
-            tmpl = '{#harvest} {@intlMessage val=HARVEST_MSG person=person count=count /}{/harvest}',
+        var tmpl = '{#harvest} {@intlMessage _msg=HARVEST_MSG person=person count=count /}{/harvest}',
             ctx = {
                 HARVEST_MSG: '{person} harvested {count, plural, one {# apple} other {# apples}}.',
                 harvest: [
@@ -438,8 +454,20 @@ describe('Helper `intlMessage`', function () {
                 ]
             },
             expected = " Allison harvested 10 apples. Jeremy harvested 60 apples.";
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, ctx, function(err, out) {
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should use a precompiled message', function () {
+        var tmpl = '{@intlMessage _msg=MSG firstName=firstName lastName=lastName /}',
+            ctx = {
+                firstName: 'Anthony',
+                lastName: 'Pipkin'
+            },
+            expected = "Hi, my name is Anthony Pipkin.";
+        ctx.MSG = new IntlMessageFormat('Hi, my name is {firstName} {lastName}.');
+        Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -455,77 +483,129 @@ describe('Helper `intl`', function () {
         expect(Dust.helpers.intl).to.be.a('function');
     });
 
-    it('should pass off to format a number', function () {
-        var name = 'intl0',
-            tmpl = '{@intl val=NUM locale="de-DE"/}',
+    it('should maintain a locale', function () {
+        var name = 'intl3',
+            tmpl = '{@intlNumber val=NUM/} {@intl locales="de-DE"}{@intlNumber val=NUM /}{/intl} {@intlNumber val=NUM/}',
             ctx = { NUM: 40000.004 },
-            expected = "40.000,004";
+            expected = '40,000.004 40.000,004 40,000.004';
         Dust.loadSource(Dust.compile(tmpl, name));
         Dust.render(name, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
-    it('should pass off to format a date', function (){
-        var name = 'intl1',
-            tmpl = '{@intl val=date /}',
-            ctx = {
-                date: new Date('Thu Jan 23 2014 18:00:44 GMT-0500 (EST)')
-            },
-            expected = "1/23/2014";
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, ctx, function(err, out) {
+    it('should maintain context regardless of depth', function () {
+        var tmpl = '{@intl locales="de-DE"}{@intl locales="en-US"}{@intlNumber val=NUM/} {/intl}{@intlNumber val=NUM/}{/intl} {@intlNumber val=NUM/}',
+            ctx = { NUM: 40000.004 },
+            expected = '40,000.004 40.000,004 40,000.004';
+        Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
-    it('should pass off to format a message', function () {
-        var name = 'intl2',
-            tmpl = '{#harvest} {@intl val=HARVEST_MSG person=person count=count /}{/harvest}',
-            ctx = {
-                HARVEST_MSG: '{person} harvested {count, plural, one {# apple} other {# apples}}.',
-                harvest: [
-                    { person: 'Allison', count: 10 },
-                    { person: 'Jeremy', count: 60 }
-                ]
-            },
-            expected = " Allison harvested 10 apples. Jeremy harvested 60 apples.";
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, ctx, function(err, out) {
-            expect(out).to.equal(expected);
-        });
-    });
-
-    describe('as a block helper', function () {
-        it('should maintain a locale', function () {
-            var name = 'intl3',
-                tmpl = '{@intl val=NUM/} {@intl locale="de-DE"}{@intl val=NUM /}{/intl} {@intl val=NUM/}',
-                ctx = { NUM: 40000.004 },
-                expected = '40,000.004 40.000,004 40,000.004';
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
+    describe('should provide `messages` for intlMessage', function () {
+        it('strings', function () {
+            var tmpl = '{@intl messages=intl.messages}{#harvest} {@intlMessage _key="HARVEST_MSG" person=person count=count /}{/harvest}{/intl}',
+                ctx = {
+                    intl: {
+                        messages: {
+                            HARVEST_MSG: '{person} harvested {count, plural, one {# apple} other {# apples}}.',
+                        }
+                    },
+                    harvest: [
+                        { person: 'Allison', count: 1 },
+                        { person: 'Jeremy', count: 60 }
+                    ]
+                },
+                expected = " Allison harvested 1 apple. Jeremy harvested 60 apples.";
+            Dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
+        it('precompiled object', function () {
+            var tmpl = '{@intl messages=intl.messages}{@intlMessage _key="salutation" firstName=firstName lastName=lastName /}{/intl}',
+                ctx = {
+                    intl: { messages: {} },
+                    firstName: 'Anthony',
+                    lastName: 'Pipkin'
+                },
+                expected = "Hi, my name is Anthony Pipkin.";
+            ctx.intl.messages.salutation = new IntlMessageFormat('Hi, my name is {firstName} {lastName}.');
+            Dust.renderSource(tmpl, ctx, function(err, out) {
+                expect(out).to.equal(expected);
+            });
+        });
+    });
 
-        it('should maintain a currency', function () {
-            var name = 'intl4',
-                tmpl = '{@intl val=NUM style="currency"/} {@intl currency="EUR"}{@intl val=NUM style="currency"/}{/intl} {@intl val=NUM style="currency"/}',
-                ctx = { NUM: 40000.004 },
+    describe('should provide formats', function () {
+        it('for intlNumber', function () {
+            var tmpl = '{@intl formats=intl.formats}{@intlNumber val=NUM _fmt="usd"/} {@intlNumber val=NUM _fmt="eur"/} {@intlNumber val=NUM style="currency" currency="USD"/}{/intl}',
+                ctx = {
+                    intl: {
+                        formats: {
+                            eur: { style: 'currency', currency: 'EUR' },
+                            usd: { style: 'currency', currency: 'USD' }
+                        }
+                    },
+                    NUM: 40000.004
+                },
                 expected = '$40,000.00 €40,000.00 $40,000.00';
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
+            Dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
 
-        it('should maintain context regardless of depth', function () {
-            var name = 'intl5',
-                tmpl = '{@intl locale="de-DE"}{@intl locale="en-US"}{@intl val=NUM/} {/intl}{@intl val=NUM/}{/intl} {@intl val=NUM/}',
-                ctx = { NUM: 40000.004 },
-                expected = '40,000.004 40.000,004 40,000.004';
-            Dust.loadSource(Dust.compile(tmpl, name));
-            Dust.render(name, ctx, function(err, out) {
+        it('for intlDate', function () {
+            var tmpl = '{@intl formats=intl.formats}{@intlDate val=' + timeStamp + ' _fmt="hm"/}{/intl}',
+                ctx = {
+                    intl: {
+                        formats: {
+                            hm: { hour: 'numeric', minute: 'numeric' }
+                        }
+                    }
+                },
+                expected,   // "6:00 PM" EST or "3:00 PM" PST
+                d = new Date(timeStamp);
+            expected = (d.getHours() - 12) + ':00 PM';  // the actual value depends on the timezone where this test is run :(
+            Dust.renderSource(tmpl, ctx, function(err, out) {
+                expect(out).to.equal(expected);
+            });
+        });
+
+        it('for intlMessage', function () {
+            var tmpl = '{@intl formats=intl.formats}{@intlMessage _msg=MSG product=PRODUCT price=PRICE deadline=DEADLINE timeZone=TZ/}{/intl}',
+                ctx = {
+                    MSG: '{product} cost {price, usd} (or {price, eur}) if ordered by {deadline, date, medium}',
+                    intl: {
+                        formats: {
+                            eur: function(val, locale, options) {
+                                return new intl.NumberFormat(locale, {
+                                    style: 'currency',
+                                    currency: 'EUR'
+                                }).format(val);
+                            },
+                            usd: function(val, locale, options) {
+                                return new intl.NumberFormat(locale, {
+                                    style: 'currency',
+                                    currency: 'USD'
+                                }).format(val);
+                            },
+                            ymd: function(val, locale, options) {
+                                return new intl.DateTimeFormat(locale, {
+                                    year: 'numeric',
+                                    month: 'numeric',
+                                    day: 'numeric'
+                                }).format(val);
+                            }
+                        }
+                    },
+                    PRODUCT: 'oranges',
+                    PRICE: 40000.004,
+                    DEADLINE: timeStamp,
+                    TZ: 'UTC'
+                },
+                expected = "oranges cost $40,000.00 (or €40,000.00) if ordered by Jan 23, 2014";
+            Dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
