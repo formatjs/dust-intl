@@ -575,27 +575,12 @@ describe('Helper `intl`', function () {
         it('for intlMessage', function () {
             var tmpl = '{@intl formats=intl.formats}{@intlMessage _msg=MSG product=PRODUCT price=PRICE deadline=DEADLINE timeZone=TZ/}{/intl}',
                 ctx = {
-                    MSG: '{product} cost {price, usd} (or {price, eur}) if ordered by {deadline, date, medium}',
+                    MSG: '{product} cost {price, number, usd} (or {price, number, eur}) if ordered by {deadline, date, medium}',
                     intl: {
                         formats: {
-                            eur: function(val, locale, options) {
-                                return new intl.NumberFormat(locale, {
-                                    style: 'currency',
-                                    currency: 'EUR'
-                                }).format(val);
-                            },
-                            usd: function(val, locale, options) {
-                                return new intl.NumberFormat(locale, {
-                                    style: 'currency',
-                                    currency: 'USD'
-                                }).format(val);
-                            },
-                            ymd: function(val, locale, options) {
-                                return new intl.DateTimeFormat(locale, {
-                                    year: 'numeric',
-                                    month: 'numeric',
-                                    day: 'numeric'
-                                }).format(val);
+                            number: {
+                                eur: { style: 'currency', currency: 'EUR' },
+                                usd: { style: 'currency', currency: 'USD' }
                             }
                         }
                     },
