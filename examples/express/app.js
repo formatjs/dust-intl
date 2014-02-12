@@ -7,7 +7,9 @@ var
 
 // These are our polyfills.
 global.Intl              = require('intl');
-global.IntlMessageFormat = require('intl-messageformat');
+// We need to do it this way until intl-messageformat is published to NPM.
+global.IntlMessageFormat = require('intl-messageformat/index');
+require('intl-messageformat/locale-data/complete');
 
 dustIntl = require('../../lib/helpers');
 dustIntl.register(dust);
@@ -19,16 +21,22 @@ app.set('port', 3000);
 
 
 // middleware for setting up the locale
-app.get('*', function(req, res, next) {
+app.use(function(req, res, next) {
     res.locals.intl = {};
+    res.locals.intl.formats = {
+        number: {
+            eur: { style: 'currency', currency: 'EUR' },
+            usd: { style: 'currency', currency: 'USD' }
+        }
+    };
     res.locals.intl.messages = {
-        FROM: "from request: {num, number, integer}"
+        FROM: "from request: {num, number, eur}"
     };
 
     //// This is the best approach...
-    //res.locals.intl.locale = req.acceptedLanguages[0];
+    //res.locals.intl.locales = req.acceptedLanguages[0];
     //// ...but for our testing we'll fake a German user.
-    res.locals.intl.locale = 'de-DE'
+    res.locals.intl.locales = 'de-DE'
 
     next();
 });
