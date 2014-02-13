@@ -165,6 +165,20 @@ describe('Helper `intlNumber`', function () {
                     expect(out).to.equal(expected);
                 });
             });
+
+            it('should work wwith a locale from explicit context', function () {
+                var tmpl = '{@intlNumber val=NUM /}',
+                    ctx = {
+                        intl: {
+                            locales: 'de-DE'
+                        },
+                        NUM: 40000.004
+                    },
+                    expected = "40.000,004";
+                Dust.renderSource(tmpl, ctx, function(err, out) {
+                    expect(out).to.equal(expected);
+                });
+            });
         });
     });
 
@@ -539,12 +553,14 @@ describe('Helper `intl`', function () {
 
     describe('should provide formats', function () {
         it('for intlNumber', function () {
-            var tmpl = '{@intl formats=intl.formats}{@intlNumber val=NUM _fmt="usd"/} {@intlNumber val=NUM _fmt="eur"/} {@intlNumber val=NUM style="currency" currency="USD"/}{/intl}',
+            var tmpl = '{@intl formats=intl.formats}{@intlNumber val=NUM formatName="usd"/} {@intlNumber val=NUM formatName="eur"/} {@intlNumber val=NUM style="currency" currency="USD"/}{/intl}',
                 ctx = {
                     intl: {
                         formats: {
-                            eur: { style: 'currency', currency: 'EUR' },
-                            usd: { style: 'currency', currency: 'USD' }
+                            number: {
+                                eur: { style: 'currency', currency: 'EUR' },
+                                usd: { style: 'currency', currency: 'USD' }
+                            }
                         }
                     },
                     NUM: 40000.004
@@ -556,11 +572,13 @@ describe('Helper `intl`', function () {
         });
 
         it('for intlDate', function () {
-            var tmpl = '{@intl formats=intl.formats}{@intlDate val=' + timeStamp + ' _fmt="hm"/}{/intl}',
+            var tmpl = '{@intl formats=intl.formats}{@intlDate val=' + timeStamp + ' formatName="hm"/}{/intl}',
                 ctx = {
                     intl: {
                         formats: {
-                            hm: { hour: 'numeric', minute: 'numeric' }
+                            date: {
+                                hm: { hour: 'numeric', minute: 'numeric' }
+                            }
                         }
                     }
                 },
