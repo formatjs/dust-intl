@@ -368,25 +368,23 @@ describe('Helper `intlDate`', function () {
     */
 
     it('should return a formatted string of just the time', function () {
-        var tmpl = '{@intlDate val=' + timeStamp + ' hour="numeric" minute="numeric" /}',
+        var tmpl = '{@intlDate val=' + timeStamp + ' hour="numeric" minute="numeric" timeZone="UTC"/}',
             ctx = {},
-            expected,   // "6:00 PM" EST or "3:00 PM" PST
+            expected = '11:00 PM',
             d = new Date(timeStamp);
-        expected = (d.getHours() - 12) + ':00 PM';  // the actual value depends on the timezone where this test is run :(
         Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should work with format options from context', function () {
-        var tmpl = '{@intlDate val=' + timeStamp + ' hour=HOUR minute="{MINUTE}" /}',
+        var tmpl = '{@intlDate val=' + timeStamp + ' hour=HOUR minute="{MINUTE}" timeZone="UTC"/}',
             ctx = {
                 HOUR: 'numeric',
                 MINUTE: 'numeric'
             },
-            expected,   // "6:00 PM" EST or "3:00 PM" PST
+            expected = '11:00 PM',
             d = new Date(timeStamp);
-        expected = (d.getHours() - 12) + ':00 PM';  // the actual value depends on the timezone where this test is run :(
         Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
@@ -572,7 +570,7 @@ describe('Helper `intl`', function () {
         });
 
         it('for intlDate', function () {
-            var tmpl = '{@intl formats=intl.formats}{@intlDate val=' + timeStamp + ' formatName="hm"/}{/intl}',
+            var tmpl = '{@intl formats=intl.formats}{@intlDate val=' + timeStamp + ' formatName="hm" timeZone="UTC"/}{/intl}',
                 ctx = {
                     intl: {
                         formats: {
@@ -582,9 +580,8 @@ describe('Helper `intl`', function () {
                         }
                     }
                 },
-                expected,   // "6:00 PM" EST or "3:00 PM" PST
+                expected = "11:00 PM",
                 d = new Date(timeStamp);
-            expected = (d.getHours() - 12) + ':00 PM';  // the actual value depends on the timezone where this test is run :(
             Dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
