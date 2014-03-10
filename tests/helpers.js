@@ -483,6 +483,19 @@ describe('Helper `intlMessage`', function () {
             expect(out).to.equal(expected);
         });
     });
+
+    it('should support numeric token replacements (with `v` prefix)', function () {
+        var tmpl = '{@intlMessage _msg=MSG v0=firstName v1=lastName /}',
+            ctx = {
+                MSG: 'Hi, my name is {0} {1}.',
+                firstName: 'Anthony',
+                lastName: 'Pipkin'
+            },
+            expected = "Hi, my name is Anthony Pipkin.";
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
 });
 
 
