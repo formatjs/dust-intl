@@ -12,18 +12,19 @@ Dust helpers for internationalization.
 ### Browser
 
 1. Install with [bower](http://bower.io/): `bower install dust-helper-intl`
-2. Load the scripts into your page. (It does not matter which order the scripts are loaded in.)
+2. Load the scripts into your page.
 
-    ```html
-    <script src="dustjs-linkedin.js"></script>
-    <script src="dust-helper-intl.js"></script>
-    ```
+```html
+<script src="intl-messageformat.js"></script>
+<script src="dustjs-linkedin.js"></script>
+<script src="dust-helper-intl.js"></script>
+```
 
 3. Register the helpers:
 
-    ```javascript
-    DustHelperIntl.register(dust);
-    ```
+```javascript
+DustHelperIntl.register(dust);
+```
 
 
 ### Node/CommonJS
@@ -31,15 +32,15 @@ Dust helpers for internationalization.
 1. You can install the helpers with npm: `npm install dust-helper-intl`
 2. Load in the module and register it:
 
-    ```javascript
-    var Dust = require('dustjs-linkedin');
-    global.Intl = require('intl');
-    require('dust-helper-intl').register(Dust);
-    ```
+```javascript
+var Dust = require('dustjs-linkedin');
+global.Intl = require('intl');
+require('dust-helper-intl').register(Dust);
+```
 
-    **NOTE:**  Since node (as of 0.10) doesn't provide the global `Intl` object
-    (ECMA-402) you'll need to provide a polyfill.  The `intl` NPM package can
-    provide this or you can use another.
+**NOTE:** Since node (as of 0.10) doesn't provide the global `Intl` object
+(ECMA-402) you'll need to provide a polyfill. The `intl` NPM package can
+provide this or you can use another.
 
 
 ### AMD
@@ -47,11 +48,11 @@ Dust helpers for internationalization.
 1. Install with [bower](http://bower.io/): `bower install dust-form-helpers`
 3. Load in the module and register it:
 
-    ```javascript
-    define(['dust', 'dust-helper-intl'], function(Dust, DustHelperIntl) {
-        DustHelperIntl.register(Dust);
-    });
-    ```
+```javascript
+define(['dust', 'dust-helper-intl'], function(Dust, DustHelperIntl) {
+    DustHelperIntl.register(Dust);
+});
+```
 
 
 ## Usage
@@ -94,7 +95,7 @@ Output:
 Template:
 
 ```js
-var tmpl = '<time>{@intlDate val=' + dateStr + ' hour="numeric" minute="numeric" timeZone="UTC"/}</time>',
+var tmpl = '<time>{@intlDate val=' + dateStr + ' hour="numeric" minute="numeric" timeZone="UTC"/}</time>';
 ```
 
 Output:
@@ -126,13 +127,13 @@ Output:
 Template:
 
 ```js
-var tmpl = '<b>{@intlNumber val=40000.004 /}</b>',
+var tmpl = '<b>{@intlNumber val=40000.004 /}</b>';
 ```
 
 Output:
 
 ```html
-<b>40,000.005</b>
+<b>40,000.004</b>
 ```
 
 ####Basic (de-DE)
@@ -140,7 +141,7 @@ Output:
 Template:
 
 ```js
-var tmpl = '<b>{@intlNumber val=40000 locales="de-DE"/}</b>',
+var tmpl = '<b>{@intlNumber val=40000.004 locales="de-DE"/}</b>';
 ```
 
 Output:
@@ -332,3 +333,10 @@ Output:
 ```html
 <p>Jeremy harvested 1 apple.</p>
 ```
+
+## License
+
+This software is free to use under the Yahoo! Inc. BSD license.
+See the [LICENSE file][] for license text and copyright information.
+
+[LICENSE file]: https://github.com/yahoo/dust-helper-intl/blob/master/LICENSE
