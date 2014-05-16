@@ -1,7 +1,8 @@
 {
   "name": "dust-helper-intl",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "dust helpers for internationalization",
+  "homepage": "https://github.com/yahoo/dust-helper-intl",
   "keywords": [
     "intl",
     "i18n",
@@ -23,8 +24,12 @@
     "url": "git@github.com:yahoo/dust-helper-intl.git"
   },
   "main": "lib/helpers.js",
-  "directories": {
-    "test": "tests"
+  "files": [
+    "lib/"
+  ],
+  "engines": {
+    "node": ">=0.10.0",
+    "npm": ">=1.4.0"
   },
   "dependencies": {
     "intl-messageformat": "~0.1.0"
@@ -40,7 +45,8 @@
     "intl": "*",
     "istanbul": "~0.2.4",
     "xunit-file": "*",
-    "mocha": "1.15.*"
+    "mocha": "1.15.*",
+    "grunt-contrib-copy": "^0.5.0"
   },
   "scripts": {
     "pretest": "grunt jshint build",

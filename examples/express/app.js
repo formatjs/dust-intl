@@ -6,12 +6,10 @@ var
     dustIntl;
 
 // These are our polyfills.
-global.Intl              = require('intl');
-// We need to do it this way until intl-messageformat is published to NPM.
-global.IntlMessageFormat = require('intl-messageformat/index');
-require('intl-messageformat/locale-data/complete');
+global.Intl              = global.Intl || require('intl');
+global.IntlMessageFormat = require('intl-messageformat');
 
-dustIntl = require('../../lib/helpers');
+dustIntl = require('../../'); // require('dust-helper-intl');
 dustIntl.register(dust);
 
 app.engine('dust', consolidate.dust);

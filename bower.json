@@ -1,32 +1,27 @@
 {
-    "name": "dust-helpers-intl",
-    "main": "lib/helpers.js",
-    "version": "0.0.2",
-    "homepage": "https://github.com/yahoo/dust-helpers-intl",
-
-    "authors": [
-        "Anthony Pipkin <a.pipkin@yahoo.com>"
-    ],
-
-    "description": "dust helpers for internationalization",
-
-    "keywords": [
-        "intl",
-        "i18n",
-        "dust"
-    ],
-
-    "license": "Yahoo BSD",
-
-    "dependencies": {
-        "intl-messageformat": "~0.1.0"
-    },
-
-    "ignore": [
-        "**/.*",
-        "coverage",
-        "node_modules",
-        "bower_components",
-        "tests"
-    ]
+  "name": "dust-helpers-intl",
+  "main": "dist/helpers.js",
+  "version": "0.0.3",
+  "homepage": "https://github.com/yahoo/dust-helpers-intl",
+  "author": "Drew Folta <drew@folta.net>",
+  "description": "dust helpers for internationalization",
+  "keywords": [
+    "intl",
+    "i18n",
+    "dust"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yahoo/dust-helper-intl.git"
+  },
+  "licenses": [{
+    "type": "Yahoo BSD",
+    "url": "https://github.com/yahoo/dust-helper-intl/blob/master/LICENSE"
+  }],
+  "dependencies": {
+    "intl-messageformat": "~0.1.0"
+  },
+  "ignore": [
+    "!dist/*.js"
+  ]
 }
