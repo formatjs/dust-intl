@@ -356,6 +356,15 @@ describe('Helper `intlDate`', function () {
         });
     });
 
+    it('should return a formatted string when passed string input', function () {
+        var tmpl = '{@intlDate val="' + timeStamp + '" /}',
+            ctx = {},
+            expected = "1/23/2014";
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        }); 
+    });
+
     /** SINGLE VALUES ARE MUTED FOR NOW :: https://github.com/andyearnshaw/Intl.js/issues/56
     it('should return a formatted string of option requested', function () {
         var tmpl = '{@intlDate val=DATE year="numeric" /}',
