@@ -61,7 +61,7 @@ define(['dust', 'dust-helper-intl'], function(Dust, DustHelperIntl) {
 NOTE: We will use the following variables in the examples:
 
 ```js
-var dateString = (new Date()).toString(); // 'Wed Mar 26 2014 15:18:48 GMT-0700 (PDT)'
+var dateStr = (new Date()).toString(); // 'Wed Mar 26 2014 15:18:48 GMT-0700 (PDT)'
 var timeStamp = (new Date()).getTime();   // 1395872439650
 ```
 
@@ -95,7 +95,7 @@ Output:
 Template:
 
 ```js
-var tmpl = '<time>{@intlDate val=' + dateStr + ' hour="numeric" minute="numeric" timeZone="UTC"/}</time>';
+var tmpl = '<time>{@intlDate val="' + dateStr + '" hour="numeric" minute="numeric" timeZone="UTC"/}</time>';
 ```
 
 Output:
@@ -127,7 +127,7 @@ Output:
 Template:
 
 ```js
-var tmpl = '<b>{@intlNumber val=40000.004 /}</b>';
+var tmpl = '<b>{@intlNumber val="40000.004" /}</b>';
 ```
 
 Output:
@@ -141,7 +141,7 @@ Output:
 Template:
 
 ```js
-var tmpl = '<b>{@intlNumber val=40000.004 locales="de-DE"/}</b>';
+var tmpl = '<b>{@intlNumber val="40000.004" locales="de-DE"/}</b>';
 ```
 
 Output:
@@ -154,7 +154,7 @@ Output:
 Template:
 
 ```js
-var tmpl = '<b>{@intlNumber val=40000 style="currency" currency=USD /}</b>';
+var tmpl = '<b>{@intlNumber val="40000" style="currency" currency="USD" /}</b>';
 ```
 
 Output:
@@ -167,7 +167,7 @@ Output:
 Template:
 
 ```js
-var tmpl = '<b>{@intlNumber val=40000 style="currency" currency=EUR /}</b>';
+var tmpl = '<b>{@intlNumber val="40000" style="currency" currency="EUR" /}</b>';
 ```
 
 Output:
@@ -181,7 +181,7 @@ Output:
 Template:
 
 ```js
-var tmpl = '<b>{@intlNumber val=40000 style="currency" currency=JPY /}</b>';
+var tmpl = '<b>{@intlNumber val="40000" style="currency" currency="JPY" /}</b>';
 ```
 
 Output:
@@ -194,7 +194,7 @@ Output:
 Template:
 
 ```js
-var tmpl = '<b>{@intlNumber val=400 style="percent" /}</b>';
+var tmpl = '<b>{@intlNumber val="400" style="percent" /}</b>';
 ```
 
 Output:
@@ -207,7 +207,7 @@ Output:
 Template:
 
 ```js
-var tmpl = '<b>{@intlNumber val=400 style="percent" locales="de-DE" /}</b>';
+var tmpl = '<b>{@intlNumber val="400" style="percent" locales="de-DE" /}</b>';
 ```
 
 Output:
