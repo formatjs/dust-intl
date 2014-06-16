@@ -79,16 +79,31 @@ Output:
 ```
 
 ####Convert from timestamp
+
 Template:
 
 ```js
-var tmpl = '<time>{@intlDate val="' + timeStamp + '" /}</time>';
+var tmpl = '<time>{@intlDate val=' + timeStamp + ' /}</time>';
+```
+
+or 
+
+```js
+var tmpl = '<time>{@intlDate val={timeStamp} /}</time>';
+var ctx = { timeStamp : (new Date()).getTime() };
 ```
 
 Output:
 
 ```html
 <time>3/26/2014</time>
+```
+
+> **Note**: Timestamps are _only_ supported as numeric values, using a String representation of a timestamp will fail. This is no shortcoming of the Dust helper, but of JavaScript's Date constructor:
+
+> ```js
+(new Date("1395872439650")).getTime();
+// => NaN
 ```
 
 ####Formatting the output
