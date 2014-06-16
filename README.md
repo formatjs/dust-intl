@@ -99,12 +99,8 @@ Output:
 <time>3/26/2014</time>
 ```
 
-> **Note**: Timestamps are _only_ supported as numeric values, using a String representation of a timestamp will fail. This is no shortcoming of the Dust helper, but of JavaScript's Date constructor:
+> **Note**: Timestamps are always numeric values, passing them as String will fail (see JavaScript Date constructor).
 
-> ```js
-(new Date("1395872439650")).getTime();
-// => NaN
-```
 
 ####Formatting the output
 Template:
