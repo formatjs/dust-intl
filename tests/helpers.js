@@ -179,6 +179,57 @@ describe('Helper `intlNumber`', function () {
                     expect(out).to.equal(expected);
                 });
             });
+
+            it('should work with a locale from global context', function() {
+                var tmpl = '{@intlNumber val=NUM /}',
+                    baseCtx = Dust.makeBase({
+                        intl: {
+                            locales: 'de-DE'
+                        }
+                    }),
+                    ctx = {
+                        NUM: 40000.004
+                    },
+                    expected = "40.000,004";
+                Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+                    expect(out).to.equal(expected);
+                });
+            });
+
+            it('should use locale from param (if exists), rather than global context', function() {
+                var tmpl = '{@intlNumber val=NUM locales="en-US" /}',
+                    baseCtx = Dust.makeBase({
+                        intl: {
+                            locales: 'de-DE'
+                        }
+                    }),
+                    ctx = {
+                        NUM: 40000.004
+                    },
+                    expected = "40,000.004"; // en-US locale
+                Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+                    expect(out).to.equal(expected);
+                });
+            });
+
+            it('should use locale from explicit context (if exists), rather than global context', function() {
+                var tmpl = '{@intlNumber val=NUM /}',
+                    baseCtx = Dust.makeBase({
+                        intl: {
+                            locales: 'de-DE'
+                        }
+                    }),
+                    ctx = {
+                        intl: {
+                            locales: 'en-US'
+                        },
+                        NUM: 40000.004
+                    },
+                    expected = "40,000.004"; // en-US locale
+                Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+                    expect(out).to.equal(expected);
+                });
+            });
         });
     });
 
@@ -241,7 +292,7 @@ describe('Helper `intlNumber`', function () {
 
         it('should function within an `each` block helper', function () {
             var tmpl = '{#currencies} {@intlNumber val=AMOUNT style="currency" currency=CURRENCY /}{/currencies}',
-                ctx = { 
+                ctx = {
                     currencies: [
                         { AMOUNT: 3, CURRENCY: 'USD' },
                         { AMOUNT: 8, CURRENCY: 'EUR' },
@@ -282,6 +333,90 @@ describe('Helper `intlNumber`', function () {
             });
         });
 
+        it('should return a currency even when using a different locale from global context', function (){
+            var name = 'number9',
+                baseCtx = Dust.makeBase({
+                    intl: {
+                        locales: 'de-DE'
+                    }
+                }),
+                tmpl = '{@intlNumber val=40000 style="currency" currency=CURRENCY/}';
+            Dust.loadSource(Dust.compile(tmpl, name));
+            async.series([
+                function(taskDone) {
+                    Dust.render(name, baseCtx.push({ CURRENCY: 'USD' }), function(err, out) {
+                        expect(out, 'USD->de-DE').to.equal('40.000,00 $');
+                        taskDone(err);
+                    });
+                },
+                function(taskDone) {
+                    Dust.render(name, baseCtx.push({ CURRENCY: 'EUR' }), function(err, out) {
+                        expect(out, 'EUR->de-DE').to.equal('40.000,00 €');
+                        taskDone(err);
+                    });
+                },
+                function(taskDone) {
+                    Dust.render(name, baseCtx.push({ CURRENCY: 'JPY' }), function(err, out) {
+                        expect(out, 'JPY->de-DE').to.equal('40.000 ¥');
+                        taskDone(err);
+                    });
+                }
+            ], function(err) {
+                throw err;
+            });
+        });
+
+        it('should return a currency even when using a different locale from param (if exists), rather than locale in global context', function (){
+            var name = 'number9',
+                baseCtx = Dust.makeBase({
+                    intl: {
+                        locales: 'de-DE'
+                    }
+                }),
+                tmpl = '{@intlNumber val=40000 style="currency" currency=CURRENCY/}';
+            Dust.loadSource(Dust.compile(tmpl, name));
+            async.series([
+                function(taskDone) {
+                    var ctx = {
+                        CURRENCY: 'USD',
+                        intl: {
+                            locales: 'en-US'
+                        }
+                    };
+                    Dust.render(name, baseCtx.push(ctx), function(err, out) {
+                        expect(out, 'USD->en-US').to.equal('$40,000.00');
+                        taskDone(err);
+                    });
+                },
+                function(taskDone) {
+                    var ctx = {
+                        CURRENCY: 'EUR',
+                        intl: {
+                            locales: 'en-US'
+                        }
+                    };
+                    Dust.render(name, baseCtx.push(ctx), function(err, out) {
+                        expect(out, 'EUR->en-US').to.equal('€40,000.00');
+                        taskDone(err);
+                    });
+                },
+                function(taskDone) {
+                    var ctx = {
+                        CURRENCY: 'JPY',
+                        intl: {
+                            locales: 'en-US'
+                        }
+                    };
+                    Dust.render(name, baseCtx.push(ctx), function(err, out) {
+                        expect(out, 'JPY->en-US').to.equal('¥40,000');
+                        taskDone(err);
+                    });
+                }
+            ], function(err) {
+                throw err;
+            });
+        });
+
         it('should work with a currency from context', function() {
             var tmpl = '{@intlNumber val=AMOUNT style="currency" currency="{CURRENCY}" /}',
                 ctx = {
@@ -310,6 +445,34 @@ describe('Helper `intlNumber`', function () {
                 ctx = {},
                 expected = "40.000 %";
             Dust.renderSource(tmpl, ctx, function(err, out) {
+                expect(out).to.equal(expected);
+            });
+        });
+
+        it('should return a perctage when using a different locale from global context', function () {
+            var tmpl = '{@intlNumber val=400 style="percent"/}',
+                baseCtx = Dust.makeBase({
+                    intl: {
+                        locales: 'de-DE'
+                    }
+                }),
+                ctx = {},
+                expected = "40.000 %";  // de-DE locales
+            Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+                expect(out).to.equal(expected);
+            });
+        });
+
+        it('should return a perctage when using a locale from param (if exists), rather than from global context', function () {
+            var tmpl = '{@intlNumber val=400 style="percent" locales="fr-FR" /}',
+                baseCtx = Dust.makeBase({
+                    intl: {
+                        locales: 'de-DE'
+                    }
+                }),
+                ctx = {},
+                expected = "40 000 %";  // fr-FR locales
+            Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -347,11 +510,85 @@ describe('Helper `intlDate`', function () {
         });
     });
 
+    it('should return a formatted string (date) using different locale', function () {
+        var tmpl = '{@intlDate val="' + dateStr + '" locales="de-DE" /}',
+            ctx = {},
+            expected = "23.1.2014"; // de-DE locales
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string (date) using different locale from global context', function () {
+        var tmpl = '{@intlDate val="' + dateStr + '" /}',
+            baseCtx = Dust.makeBase({
+                intl: {
+                    locales: 'de-DE'
+                }
+            }),
+            ctx = {},
+            expected = "23.1.2014"; // de-DE locales
+        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string (date) using different locale from param (if exists) rather than from global context', function () {
+        var tmpl = '{@intlDate val="' + dateStr + '" locales="fr-FR" /}',
+            baseCtx = Dust.makeBase({
+                intl: {
+                    locales: 'de-DE'
+                }
+            }),
+            ctx = {},
+            expected = "23/1/2014"; // fr-FR locales
+        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
     it('should return a formatted string (time)', function () {
         var tmpl = '{@intlDate val=' + timeStamp + ' /}',
             ctx = {},
             expected = "1/23/2014";
         Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string (time) using different locale', function () {
+        var tmpl = '{@intlDate val=' + timeStamp + ' locales="de-DE" /}',
+            ctx = {},
+            expected = "23.1.2014";
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string (time) using different locale from global context', function () {
+        var tmpl = '{@intlDate val=' + timeStamp + ' /}',
+            baseCtx = Dust.makeBase({
+                intl: {
+                    locales: 'de-DE'
+                }
+            }),
+            ctx = {},
+            expected = "23.1.2014";
+        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string (time) using different locale from param (if exists) rather than from global context', function () {
+        var tmpl = '{@intlDate val=' + timeStamp + ' locales="fr-FR" /}',
+            baseCtx = Dust.makeBase({
+                intl: {
+                    locales: 'de-DE'
+                }
+            }),
+            ctx = {},
+            expected = "23/1/2014";
+        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -373,6 +610,31 @@ describe('Helper `intlDate`', function () {
             expected = '11:00 PM',
             d = new Date(timeStamp);
         Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string of just the time using different locales', function () {
+        var tmpl = '{@intlDate val=' + timeStamp + ' hour="numeric" minute="numeric" timeZone="UTC" locales="de-DE"/}',
+            ctx = {},
+            expected = '23:00',
+            d = new Date(timeStamp);
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string of just the time using different locales from global context', function () {
+        var tmpl = '{@intlDate val=' + timeStamp + ' hour="numeric" minute="numeric" timeZone="UTC"/}',
+            baseCtx = Dust.makeBase({
+                intl: {
+                    locales: 'de-DE'
+                }
+            }),
+            ctx = {},
+            expected = '23:00',
+            d = new Date(timeStamp);
+        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -429,13 +691,13 @@ describe('Helper `intlMessage`', function () {
     it('should return a formatted string with formatted numbers and dates', function () {
         var tmpl = '{@intlMessage _msg=POP_MSG city=city population=population census_date=census_date timeZone=timeZone/}',
             ctx = {
-                POP_MSG: '{city} has a population of {population, number, integer} as of {census_date, date, medium}.',
+                POP_MSG: '{city} has a population of {population, number, integer} as of {census_date, date, long}.',
                 city: 'Atlanta',
                 population: 5475213,
                 census_date: (new Date('1/1/2010')).getTime(),
                 timeZone: 'UTC'
             },
-            expected = "Atlanta has a population of 5,475,213 as of Jan 1, 2010.";
+            expected = "Atlanta has a population of 5,475,213 as of January 1, 2010.";
         Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
@@ -444,14 +706,54 @@ describe('Helper `intlMessage`', function () {
     it('should return a formatted string with formatted numbers and dates in a different locale', function () {
         var tmpl = '{@intlMessage _msg=POP_MSG locales="de-DE" city=city population=population census_date=census_date timeZone=timeZone/}',
             ctx = {
-                POP_MSG: '{city} has a population of {population, number, integer} as of {census_date, date, medium}.',
+                POP_MSG: '{city} has a population of {population, number, integer} as of {census_date, date, long}.',
                 city: 'Atlanta',
                 population: 5475213,
                 census_date: (new Date('1/1/2010')),
                 timeZone: 'UTC'
             },
-            expected = "Atlanta has a population of 5.475.213 as of 1. Jan. 2010.";
+            expected = "Atlanta has a population of 5.475.213 as of 1. Januar 2010.";
         Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string with formatted numbers and dates in a different locale from global context', function () {
+        var tmpl = '{@intlMessage _msg=POP_MSG city=city population=population census_date=census_date timeZone=timeZone/}',
+            baseCtx = Dust.makeBase({
+                intl: {
+                    locales: 'de-DE'
+                }
+            }),
+            ctx = {
+                POP_MSG: '{city} has a population of {population, number, integer} as of {census_date, date, long}.',
+                city: 'Atlanta',
+                population: 5475213,
+                census_date: (new Date('1/1/2010')),
+                timeZone: 'UTC'
+            },
+            expected = "Atlanta has a population of 5.475.213 as of 1. Januar 2010.";
+        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string with formatted numbers and dates in a different locale from param (if exists) rather than global context', function () {
+        var tmpl = '{@intlMessage _msg=POP_MSG locales="fr-FR" city=city population=population census_date=census_date timeZone=timeZone/}',
+            baseCtx = Dust.makeBase({
+                intl: {
+                    locales: 'de-DE'
+                }
+            }),
+            ctx = {
+                POP_MSG: '{city} has a population of {population, number, integer} as of {census_date, date, long}.',
+                city: 'Atlanta',
+                population: 5475213,
+                census_date: (new Date('1/1/2010')),
+                timeZone: 'UTC'
+            },
+            expected = "Atlanta has a population of 5 475 213 as of 1 janvier 2010.";   // fr-FR locales
+        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -506,11 +808,41 @@ describe('Helper `intl`', function () {
         });
     });
 
+    it('should maintain a locale and fallback to global context', function () {
+        var name = 'intl3',
+            tmpl = '{@intlNumber val=NUM/} {@intl locales="de-DE"}{@intlNumber val=NUM /}{/intl} {@intlNumber val=NUM/}',
+            baseCtx = Dust.makeBase({
+                intl: {
+                    locales: 'fr-FR'
+                }
+            }),
+            ctx = { NUM: 40000.004 },
+            expected = '40 000,004 40.000,004 40 000,004';
+        Dust.loadSource(Dust.compile(tmpl, name));
+        Dust.render(name, baseCtx.push(ctx), function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
     it('should maintain context regardless of depth', function () {
         var tmpl = '{@intl locales="de-DE"}{@intl locales="en-US"}{@intlNumber val=NUM/} {/intl}{@intlNumber val=NUM/}{/intl} {@intlNumber val=NUM/}',
             ctx = { NUM: 40000.004 },
             expected = '40,000.004 40.000,004 40,000.004';
         Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should maintain context regardless of depth and fallback to global context', function () {
+        var tmpl = '{@intl locales="de-DE"}{@intl locales="en-US"}{@intlNumber val=NUM/} {/intl}{@intlNumber val=NUM/}{/intl} {@intlNumber val=NUM/}',
+            baseCtx = Dust.makeBase({
+                intl: {
+                    locales: 'fr-FR'
+                }
+            }),
+            ctx = { NUM: 40000.004 },
+            expected = '40,000.004 40.000,004 40 000,004';  // [en-US locales] [de-DE locales] [fr-FR locales from global context]
+        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -590,7 +922,7 @@ describe('Helper `intl`', function () {
         it('for intlMessage', function () {
             var tmpl = '{@intl formats=intl.formats}{@intlMessage _msg=MSG product=PRODUCT price=PRICE deadline=DEADLINE timeZone=TZ/}{/intl}',
                 ctx = {
-                    MSG: '{product} cost {price, number, usd} (or {price, number, eur}) if ordered by {deadline, date, medium}',
+                    MSG: '{product} cost {price, number, usd} (or {price, number, eur}) if ordered by {deadline, date, long}',
                     intl: {
                         formats: {
                             number: {
@@ -604,7 +936,7 @@ describe('Helper `intl`', function () {
                     DEADLINE: timeStamp,
                     TZ: 'UTC'
                 },
-                expected = "oranges cost $40,000.00 (or €40,000.00) if ordered by Jan 23, 2014";
+                expected = "oranges cost $40,000.00 (or €40,000.00) if ordered by January 23, 2014";
             Dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
