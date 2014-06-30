@@ -1,7 +1,7 @@
 {
   "name": "dust-helpers-intl",
   "main": "dist/helpers.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "homepage": "https://github.com/yahoo/dust-helpers-intl",
   "author": "Drew Folta <drew@folta.net>",
   "description": "dust helpers for internationalization",
