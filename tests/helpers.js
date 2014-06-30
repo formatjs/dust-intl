@@ -39,7 +39,7 @@ if (typeof require === 'function') {
     IntlMessageFormat = require('intl-messageformat');
     require('intl-messageformat/locale-data/en');
 
-    require('../lib/helpers.js').register(Dust);
+    require('../lib/helpers.js').registerWith(Dust);
 }
 
 expect = chai.expect;
