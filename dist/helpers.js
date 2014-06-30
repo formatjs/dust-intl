@@ -259,6 +259,12 @@
             throw new ReferenceError('@intlDate needs a `val` parameter');
         }
         val = _tap(params.val, chunk, context);
+   
+        // Check if `val` is a string that's a positive integer
+        if (typeof val === 'string' && /^\+?(0|[1-9]\d*)$/.test(val)) {
+            val = parseFloat(val);
+        }
+
         delete params.val;  // since params might be interpretted as format options
         val = new Date(val).getTime();
 
@@ -302,7 +308,7 @@
         },
 
         // utility method to register all the helpers
-        register: function(dust) {
+        registerWith: function(dust) {
             dust.helpers.intlMessage    = intlMessage;
             dust.helpers.intlNumber     = intlNumber;
             dust.helpers.intlDate       = intlDate;
