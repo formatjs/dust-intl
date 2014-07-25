@@ -1,5 +1,5 @@
 {
-    "name": "dust-helpers-intl",
+    "name": "dust-helper-intl",
     "main": "lib/helpers.js",
     "version": "0.0.2",
     "homepage": "https://github.com/yahoo/dust-helpers-intl",
