@@ -64,7 +64,7 @@
     function _tap(input, chunk, context) {
         // return given input if there is no dust reference to resolve
         var output = input;
-        // dust compiles a string/reference such as {foo} to function, 
+        // dust compiles a string/reference such as {foo} to function,
         if (typeof input === "function") {
             // just a plain function (a.k.a anonymous functions) in the context, not a dust `body` function created by the dust compiler
             if (input.isFunction === true) {
@@ -85,6 +85,40 @@
 
 
     /**
+     Returns value from the data using ordered list of keys
+     @protected
+     @method _getResult
+     @param {Object} data   The dust context stack's head.
+     @param {Array} keys    An ordered list of keys to drill down into the data structure.
+     @return {mixed}        Value found for the key path, or undefined if not found.
+     */
+    function _getResult(data, keys) {
+        var k,
+            last = keys.length - 1,
+            key;
+
+        // iterate the ordered keys (e.g.
+        // keys = [ 'intl', 'locales' ]
+        // it expects to get intl.locales in the current data stack
+        for (k = 0; k < last; k += 1) {
+            key = keys[k];
+            if (! data) {
+                break;
+            }
+            if (! data.hasOwnProperty(key)) {
+                break;
+            }
+            data = data[key];
+        }
+        if (k === last && data && data.hasOwnProperty(keys[last])) {
+            return data[keys[last]];
+        }
+
+        return undefined;
+    }
+
+
+    /**
      Returns something from deep within the a value in the context, taking into
      consideration the context stack.  (The built-in version of context.get()
      isn't quite sophisticated enough for us.)
@@ -96,24 +130,25 @@
      */
     function _contextGet(ctx, keys) {
         var frame,  // the current stack frame
-            data,   // the spot within the stack frame we're inspecting
-            last = keys.length - 1,
-            k,
-            key;
+            value;
+
+        // search up the stacks
         for (frame = ctx.stack; frame; frame = frame.tail) {
-            data = frame.head;
-            for (k = 0; k < last; k += 1) {
-                key = keys[k];
-                if (! data.hasOwnProperty(key)) {
-                    break;
-                }
-                data = data[key];
-            }
-            if (k === last && data.hasOwnProperty(keys[last])) {
-                return data[keys[last]];
+            // finding the ordered keys in current stack frame
+            value = _getResult(frame.head, keys);
+
+            // found the ordered keys path in current stack, use that
+            if (value !== undefined) {
+                break;
             }
         }
-        return undefined;   // value not found anywhere
+
+        // can't find the keys in context stacks, try context global
+        if (value === undefined) {
+            value = _getResult(ctx.global, keys);
+        }
+
+        return value;
     }
 
 

@@ -36,8 +36,7 @@ if (typeof require === 'function') {
     }
 
     // load in message format
-    IntlMessageFormat = require('intl-messageformat');
-    require('intl-messageformat/locale-data/en');
+    IntlMessageFormat = global.IntlMessageFormat = require('intl-messageformat');
 
     require('../lib/helpers.js').registerWith(Dust);
 }
@@ -943,5 +942,3 @@ describe('Helper `intl`', function () {
         });
     });
 });
-
-
