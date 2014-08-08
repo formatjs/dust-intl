@@ -1980,12 +1980,6 @@
     $$core$$default.__addLocaleData({locale:"zu", messageformat:{pluralFunction:intl$messageformat$$funcs[3]}});
     var intl$messageformat$$default = $$core$$default;
     var $$register$with$$default = $$register$with$$registerWith;
-    var $$register$with$$helpers = {
-        intlMessage: $$register$with$$intlMessage,
-        intlNumber:  $$register$with$$intlNumber,
-        intlDate:    $$register$with$$intlDate,
-        intl:        $$register$with$$intl
-    };
 
     var $$register$with$$CONTEXT_KEY = 'intl';
 

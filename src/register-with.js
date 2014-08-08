@@ -9,13 +9,6 @@ See the accompanying LICENSE file for terms.
 import IntlMessageFormat from "intl-messageformat";
 
 export default registerWith;
-// expose the helpers individually in case someone wants to use only some of them
-export var helpers = {
-    intlMessage: intlMessage,
-    intlNumber:  intlNumber,
-    intlDate:    intlDate,
-    intl:        intl
-};
 
 var CONTEXT_KEY = 'intl';
 

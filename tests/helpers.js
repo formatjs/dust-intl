@@ -38,7 +38,7 @@ if (typeof require === 'function') {
     // load in message format
     IntlMessageFormat = require('intl-messageformat');
 
-    require('../lib/helpers.js').registerWith(Dust);
+    require('../').registerWith(Dust);
 }
 
 expect = chai.expect;
