@@ -36,7 +36,7 @@ if (typeof require === 'function') {
     }
 
     // load in message format
-    IntlMessageFormat = global.IntlMessageFormat = require('intl-messageformat');
+    IntlMessageFormat = require('intl-messageformat');
 
     require('../lib/helpers.js').registerWith(Dust);
 }

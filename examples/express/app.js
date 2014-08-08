@@ -7,7 +7,6 @@ var
 
 // These are our polyfills.
 global.Intl              = global.Intl || require('intl');
-global.IntlMessageFormat = require('intl-messageformat');
 
 dustIntl = require('../../'); // require('dust-helper-intl');
 dustIntl.register(dust);

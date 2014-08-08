@@ -18,10 +18,8 @@
     "type": "Yahoo BSD",
     "url": "https://github.com/yahoo/dust-helper-intl/blob/master/LICENSE"
   }],
-  "dependencies": {
-    "intl-messageformat": "~0.1.0"
-  },
   "ignore": [
+    "**/.*",
     "!dist/*.js"
   ]
 }
