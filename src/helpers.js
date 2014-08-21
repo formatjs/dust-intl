@@ -72,7 +72,8 @@ function intl(chunk, context, bodies, params) {
 
 
 /**
-Interprets `params.val` as a date or time to format.
+Interprets `params.val` as a date or time to format and uses the custom `date`
+formats.
 @method formatDate
 @param {Object} chunk The dust Chunk object.
 @param {Object} context The dust Context object.
@@ -103,7 +104,8 @@ function formatDate(chunk, context, bodies, params) {
 
 
 /**
-Interprets `params.val` as a date or time to format.
+Interprets `params.val` as a date or time to format and uses the custom `time`
+formats.
 @method formatTime
 @param {Object} chunk The dust Chunk object.
 @param {Object} context The dust Context object.
