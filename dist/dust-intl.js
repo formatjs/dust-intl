@@ -1,8 +1,8 @@
 (function() {
     "use strict";
-    var $$utils$$hop = Object.prototype.hasOwnProperty;
+    var $$utils1$$hop = Object.prototype.hasOwnProperty;
 
-    function $$utils$$extend(obj) {
+    function $$utils1$$extend(obj) {
         var sources = Array.prototype.slice.call(arguments, 1),
             i, len, source, key;
 
@@ -11,7 +11,7 @@
             if (!source) { continue; }
 
             for (key in source) {
-                if ($$utils$$hop.call(source, key)) {
+                if ($$utils1$$hop.call(source, key)) {
                     obj[key] = source[key];
                 }
             }
@@ -35,7 +35,7 @@
 
         if ('get' in desc && obj.__defineGetter__) {
             obj.__defineGetter__(name, desc.get);
-        } else if (!$$utils$$hop.call(obj, name) || 'value' in desc) {
+        } else if (!$$utils1$$hop.call(obj, name) || 'value' in desc) {
             obj[name] = desc.value;
         }
     };
@@ -48,7 +48,7 @@
         obj = new F();
 
         for (k in props) {
-            if ($$utils$$hop.call(props, k)) {
+            if ($$utils1$$hop.call(props, k)) {
                 $$es5$$defineProperty(obj, k, props[k]);
             }
         }
@@ -1678,7 +1678,7 @@
             id = part.id;
 
             // Enforce that all required values are provided by the caller.
-            if (!(values && $$utils$$hop.call(values, id))) {
+            if (!(values && $$utils1$$hop.call(values, id))) {
                 throw new Error('A value must be provided for: ' + id);
             }
 
@@ -1702,12 +1702,12 @@
             type, mergedType;
 
         for (type in defaults) {
-            if (!$$utils$$hop.call(defaults, type)) { continue; }
+            if (!$$utils1$$hop.call(defaults, type)) { continue; }
 
             mergedFormats[type] = mergedType = $$es5$$objCreate(defaults[type]);
 
-            if (formats && $$utils$$hop.call(formats, type)) {
-                $$utils$$extend(mergedType, formats[type]);
+            if (formats && $$utils1$$hop.call(formats, type)) {
+                $$utils1$$extend(mergedType, formats[type]);
             }
         }
 
@@ -1979,9 +1979,117 @@
     $$core$$default.__addLocaleData({locale:"zh", messageformat:{pluralFunction:intl$messageformat$$funcs[7]}});
     $$core$$default.__addLocaleData({locale:"zu", messageformat:{pluralFunction:intl$messageformat$$funcs[3]}});
     var intl$messageformat$$default = $$core$$default;
-    var $$register$with$$default = $$register$with$$registerWith;
 
-    var $$register$with$$CONTEXT_KEY = 'intl';
+    // -----------------------------------------------------------------------------
+
+    // Cache to hold `DateTimeFormat`, `NumberFormat`, and `IntlMessageFormat`
+    // instances for reuse.
+    var intl$format$cache$$cache = {
+        dateTimeFormats: {},
+        numberFormats  : {},
+        messageFormats : {}
+    };
+
+    function intl$format$cache$$getDateTimeFormat(locales, options) {
+        options || (options = {});
+
+        var cacheId = intl$format$cache$$getCacheId([locales, options]),
+            format  = intl$format$cache$$cache.dateTimeFormats[cacheId];
+
+        if (!format) {
+            format = new Intl.DateTimeFormat(locales, options);
+
+            if (cacheId) {
+                intl$format$cache$$cache.dateTimeFormats[cacheId] = format;
+            }
+        }
+
+        return format;
+    }
+
+    function intl$format$cache$$getNumberFormat(locales, options) {
+        options || (options = {});
+
+        var cacheId = intl$format$cache$$getCacheId([locales, options]),
+            format  = intl$format$cache$$cache.numberFormats[cacheId];
+
+        if (!format) {
+            format = new Intl.NumberFormat(locales, options);
+
+            if (cacheId) {
+                intl$format$cache$$cache.numberFormats[cacheId] = format;
+            }
+        }
+
+        return format;
+    }
+
+    function intl$format$cache$$getMessageFormat(message, locales, options) {
+        options || (options = {});
+
+        var cacheId = intl$format$cache$$getCacheId([message, locales, options]),
+            format  = intl$format$cache$$cache.messageFormats[cacheId];
+
+        if (!format) {
+            format = new intl$messageformat$$default(message, locales, options);
+
+            if (cacheId) {
+                intl$format$cache$$cache.messageFormats[cacheId] = format;
+            }
+        }
+
+        return format;
+    }
+
+    // -- Utilities ----------------------------------------------------------------
+
+    function intl$format$cache$$getCacheId(inputs) {
+        // When JSON is not available in the runtime, we will not create a cache id.
+        if (!JSON) { return; }
+
+        var cacheId = [];
+
+        var i, len, input;
+
+        for (i = 0, len = inputs.length; i < len; i += 1) {
+            input = inputs[i];
+
+            if (input && typeof input === 'object') {
+                cacheId.push(intl$format$cache$$orderedProps(input));
+            } else {
+                cacheId.push(input);
+            }
+        }
+
+        return JSON.stringify(cacheId);
+    }
+
+    function intl$format$cache$$orderedProps(obj) {
+        var props = [],
+            keys  = [];
+
+        var key, i, len, prop;
+
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                keys.push(key);
+            }
+        }
+
+        var orderedKeys = keys.sort();
+
+        for (i = 0, len = orderedKeys.length; i < len; i += 1) {
+            key  = orderedKeys[i];
+            prop = {};
+
+            prop[key] = obj[key];
+            props[i]  = prop;
+        }
+
+        return props;
+    }
+
+    // -----------------------------------------------------------------------------
 
     /**
      shallow merge of keys from one object to another
@@ -1991,7 +2099,7 @@
      @param {Object} sender The object which is providing the keys and values.
      @return {Object} The `receiver` object.
      */
-    function $$register$with$$_extend(receiver, sender) {
+    function $$utils$$extend(receiver, sender) {
         var p;
         for (p in sender) {
             if (sender.hasOwnProperty(p)) {
@@ -2002,12 +2110,97 @@
     }
 
 
+    /**
+     Returns something from deep within the a value in the context, taking into
+     consideration the context stack.  (The built-in version of context.get()
+     isn't quite sophisticated enough for us.)
+     @protected
+     @method contextGet
+     @param {Object} ctx The dust context.
+     @param {Array} keys An ordered list of keys to drill down into the data structure.
+     @return {mixed} Value found for the key path, or undefined if not found.
+     */
+    function $$utils$$contextGet(ctx, keys) {
+        var frame,  // the current stack frame
+            value;
+
+        // search up the stacks
+        for (frame = ctx.stack; frame; frame = frame.tail) {
+            // finding the ordered keys in current stack frame
+            value = $$utils$$getResult(frame.head, keys);
+
+            // found the ordered keys path in current stack, use that
+            if (value !== undefined) {
+                break;
+            }
+        }
+
+        // can't find the keys in context stacks, try context global
+        if (value === undefined) {
+            value = $$utils$$getResult(ctx.global, keys);
+        }
+
+        return value;
+    }
+
+
+    /**
+     Determines the format options, possibly looking in parent contexts
+     if they've been defined there.
+     @protected
+     @method getFormatOptions
+     @param {Object} params The parameters passed to the dust helper.
+     @param {Object} context The dust context stack.
+     @return {Object} The format options.
+     */
+    function $$utils$$getFormatOptions(type, chunk, params, context) {
+        var raw,
+            k,
+            fixed = {},
+            fmt;
+        if (params.formatName) {
+            fmt = $$utils$$tap(params.formatName, chunk, context);
+            delete params.formatName;
+            raw = $$utils$$contextGet(context, ['intl', 'formats', type, fmt]);
+            // TODO:  only need to copy-and-merge if there are still parameters
+            raw = $$utils$$extend({}, raw);  // shallow copy
+            $$utils$$extend(raw, params);
+        }
+        else {
+            raw = params;
+        }
+        for (k in raw) {
+            if (raw.hasOwnProperty(k)) {
+                fixed[k] = $$utils$$tap(raw[k], chunk, context);
+            }
+        }
+        return fixed;
+    }
+
+
+    /**
+     Determins the current locales, possibly looking in parent contexts
+     if they've been defined there.  Defaults to the global `this`.
+     @protected
+     @method getLocales
+     @param {Object} [params] the parameters passed to the dust helper
+     @param {Object} [context] the dust helper context
+     @return {string} the locale to use
+     */
+    function $$utils$$getLocales(chunk, params, context) {
+        if (params.locales) {
+            return $$utils$$tap(params.locales, chunk, context);
+        }
+        return $$utils$$contextGet(context, ['intl', 'locales']) || this.locale;
+    }
+
+
     // a copy of dust.helpers.tap from dustjs-helpers@1.1.2
-    function $$register$with$$_tap(input, chunk, context) {
+    function $$utils$$tap(input, chunk, context) {
         // return given input if there is no dust reference to resolve
         var output = input;
         // dust compiles a string/reference such as {foo} to function,
-        if (typeof input === "function") {
+        if (typeof input === 'function') {
             // just a plain function (a.k.a anonymous functions) in the context, not a dust `body` function created by the dust compiler
             if (input.isFunction === true) {
                 output = input();
@@ -2025,16 +2218,17 @@
         return output;
     }
 
+    // -- Internal -----------------------------------------------------------------
 
     /**
      Returns value from the data using ordered list of keys
      @protected
-     @method _getResult
+     @method getResult
      @param {Object} data   The dust context stack's head.
      @param {Array} keys    An ordered list of keys to drill down into the data structure.
      @return {mixed}        Value found for the key path, or undefined if not found.
      */
-    function $$register$with$$_getResult(data, keys) {
+    function $$utils$$getResult(data, keys) {
         var k,
             last = keys.length - 1,
             key;
@@ -2059,102 +2253,157 @@
         return undefined;
     }
 
+    // -----------------------------------------------------------------------------
 
-    /**
-     Returns something from deep within the a value in the context, taking into
-     consideration the context stack.  (The built-in version of context.get()
-     isn't quite sophisticated enough for us.)
-     @protected
-     @method _contextGet
-     @param {Object} ctx The dust context.
-     @param {Array} keys An ordered list of keys to drill down into the data structure.
-     @return {mixed} Value found for the key path, or undefined if not found.
-     */
-    function $$register$with$$_contextGet(ctx, keys) {
-        var frame,  // the current stack frame
-            value;
+    function $$helpers$$registerWith (dust) {
+        $$utils$$extend(dust.helpers, {
+            intl         : $$helpers$$intl,
+            formatDate   : $$helpers$$formatDate,
+            formatTime   : $$helpers$$formatTime,
+            formatNumber : $$helpers$$formatNumber,
+            formatMessage: $$helpers$$formatMessage
+        });
 
-        // search up the stacks
-        for (frame = ctx.stack; frame; frame = frame.tail) {
-            // finding the ordered keys in current stack frame
-            value = $$register$with$$_getResult(frame.head, keys);
-
-            // found the ordered keys path in current stack, use that
-            if (value !== undefined) {
-                break;
-            }
-        }
-
-        // can't find the keys in context stacks, try context global
-        if (value === undefined) {
-            value = $$register$with$$_getResult(ctx.global, keys);
-        }
-
-        return value;
+        // Deprecated helpers (renamed):
+        $$utils$$extend(dust.helpers, {
+            intlDate   : $$helpers$$deprecate('intlDate', $$helpers$$formatDate),
+            intlTime   : $$helpers$$deprecate('intlTime', $$helpers$$formatTime),
+            intlNumber : $$helpers$$deprecate('intlNumber', $$helpers$$formatNumber),
+            intlMessage: $$helpers$$deprecate('intlMessage', $$helpers$$formatMessage)
+        });
     }
 
-
-    /**
-     Determins the current locales, possibly looking in parent contexts
-     if they've been defined there.  Defaults to the global `this`.
-     @protected
-     @method _getLocales
-     @param {Object} [params] the parameters passed to the dust helper
-     @param {Object} [context] the dust helper context
-     @return {string} the locale to use
-     */
-    function $$register$with$$_getLocales(chunk, params, context) {
-        if (params.locales) {
-            return $$register$with$$_tap(params.locales, chunk, context);
-        }
-        return $$register$with$$_contextGet(context, [$$register$with$$CONTEXT_KEY, 'locales']) || this.locale;
+    function $$helpers$$deprecate(name, suggestion) {
+        return function () {
+            console.warn('{@' + name + '} is deprecated, use: {@' + suggestion.name + '}');
+            return suggestion.apply(this, arguments);
+        };
     }
 
+    // -- Helpers ------------------------------------------------------------------
 
     /**
-     Determines the format options, possibly looking in parent contexts
-     if they've been defined there.
-     @protected
-     @method _getFormatOptions
-     @param {Object} params The parameters passed to the dust helper.
-     @param {Object} context The dust context stack.
-     @return {Object} The format options.
-     */
-    function $$register$with$$_getFormatOptions(type, chunk, params, context) {
-        var raw,
-            k,
-            fixed = {},
-            fmt;
-        if (params.formatName) {
-            fmt = $$register$with$$_tap(params.formatName, chunk, context);
-            delete params.formatName;
-            raw = $$register$with$$_contextGet(context, [$$register$with$$CONTEXT_KEY, 'formats', type, fmt]);
-            // TODO:  only need to copy-and-merge if there are still parameters
-            raw = $$register$with$$_extend({}, raw);  // shallow copy
-            $$register$with$$_extend(raw, params);
-        }
-        else {
-            raw = params;
-        }
-        for (k in raw) {
-            if (raw.hasOwnProperty(k)) {
-                fixed[k] = $$register$with$$_tap(raw[k], chunk, context);
-            }
-        }
-        return fixed;
-    }
-
-
-    /**
-    Interprets `params.val` as a YRB message to format.
-    @method intlMessage
+    A block wrapper which stashes the `params` in the context so that
+    they are available for other intl helpers within the block.
+    @method intl
     @param {Object} chunk The dust Chunk object.
     @param {Object} context The dust Context object.
     @param {Object} bodies An object containing the dust bodies.
     @param {Object} params An object containing the parameters in the markup for this helper.
     @return {Object} The `chunk` parameter.
     */
-    function $$register$with$$intlMessage(chunk, context, bodies, params) {
+    function $$helpers$$intl(chunk, context, bodies, params) {
+        var ctx = {};
+        if (bodies.block) {
+            ctx.intl = params || {};
+            return chunk.render(bodies.block, context.push(ctx));
+        }
+        return chunk;
+    }
+
+
+    /**
+    Interprets `params.val` as a date or time to format.
+    @method formatDate
+    @param {Object} chunk The dust Chunk object.
+    @param {Object} context The dust Context object.
+    @param {Object} bodies An object containing the dust bodies.
+    @param {Object} params An object containing the parameters in the markup for this helper.
+    @return {Object} The `chunk` parameter.
+    */
+    function $$helpers$$formatDate(chunk, context, bodies, params) {
+        var formatOptions,
+            locales,
+            val,
+            formatter;
+        params = params || {};
+
+        if (!params.hasOwnProperty('val')) {
+            throw new ReferenceError('@formatDate needs a `val` parameter');
+        }
+        val = $$utils$$tap(params.val, chunk, context);
+        delete params.val;  // since params might be interpretted as format options
+        val = new Date(val).getTime();
+
+        formatOptions = $$utils$$getFormatOptions('date', chunk, params, context);
+        locales = $$utils$$getLocales(chunk, params, context);
+        formatter = intl$format$cache$$getDateTimeFormat(locales, formatOptions);
+        chunk.write(formatter.format(val));
+        return chunk;
+    }
+
+
+    /**
+    Interprets `params.val` as a date or time to format.
+    @method formatTime
+    @param {Object} chunk The dust Chunk object.
+    @param {Object} context The dust Context object.
+    @param {Object} bodies An object containing the dust bodies.
+    @param {Object} params An object containing the parameters in the markup for this helper.
+    @return {Object} The `chunk` parameter.
+    */
+    function $$helpers$$formatTime(chunk, context, bodies, params) {
+        var formatOptions,
+            locales,
+            val,
+            formatter;
+        params = params || {};
+
+        if (!params.hasOwnProperty('val')) {
+            throw new ReferenceError('@formatTime needs a `val` parameter');
+        }
+        val = $$utils$$tap(params.val, chunk, context);
+        delete params.val;  // since params might be interpretted as format options
+        val = new Date(val).getTime();
+
+        formatOptions = $$utils$$getFormatOptions('time', chunk, params, context);
+        locales = $$utils$$getLocales(chunk, params, context);
+        formatter = intl$format$cache$$getDateTimeFormat(locales, formatOptions);
+        chunk.write(formatter.format(val));
+        return chunk;
+    }
+
+
+    /**
+    Interprets `params.val` as a number to format.
+    @method formatNumber
+    @param {Object} chunk The dust Chunk object.
+    @param {Object} context The dust Context object.
+    @param {Object} bodies An object containing the dust bodies.
+    @param {Object} params An object containing the parameters in the markup for this helper.
+    @return {Object} The `chunk` parameter.
+    */
+    function $$helpers$$formatNumber(chunk, context, bodies, params) {
+        var formatOptions,
+            locales,
+            val,
+            formatter;
+        params = params || {};
+
+        if (!params.hasOwnProperty('val')) {
+            throw new ReferenceError('@formatNumber needs a `val` parameter');
+        }
+        val = $$utils$$tap(params.val, chunk, context);
+        delete params.val;  // since params might be interpretted as format options
+
+        formatOptions = $$utils$$getFormatOptions('number', chunk, params, context);
+        locales = $$utils$$getLocales(chunk, params, context);
+        formatter = intl$format$cache$$getNumberFormat(locales, formatOptions);
+        chunk.write(formatter.format(val));
+        return chunk;
+    }
+
+
+    /**
+    Interprets `params.val` as a YRB message to format.
+    @method formatMessage
+    @param {Object} chunk The dust Chunk object.
+    @param {Object} context The dust Context object.
+    @param {Object} bodies An object containing the dust bodies.
+    @param {Object} params An object containing the parameters in the markup for this helper.
+    @return {Object} The `chunk` parameter.
+    */
+    function $$helpers$$formatMessage(chunk, context, bodies, params) {
         var formatOptions = {},
             locales,
             msg,
@@ -2165,10 +2414,10 @@
             msg = params._msg;
         }
         else if (params._key) {
-            msg = $$register$with$$_contextGet(context, [$$register$with$$CONTEXT_KEY, 'messages', $$register$with$$_tap(params._key, chunk, context)]);
+            msg = $$utils$$contextGet(context, ['intl', 'messages', $$utils$$tap(params._key, chunk, context)]);
         }
         else {
-            throw new ReferenceError('@intlMessage needs either a `_msg` or `_key` parameter');
+            throw new ReferenceError('@formatMessage needs either a `_msg` or `_key` parameter');
         }
 
         // optimization for messages that have already been compiled
@@ -2177,109 +2426,18 @@
             return chunk;
         }
 
-        formatOptions = $$register$with$$_contextGet(context, [$$register$with$$CONTEXT_KEY, 'formats']);
-        locales = $$register$with$$_getLocales(chunk, params, context);
-        formatter = new intl$messageformat$$default(msg, locales, formatOptions);
+        formatOptions = $$utils$$contextGet(context, ['intl', 'formats']);
+        locales = $$utils$$getLocales(chunk, params, context);
+        formatter = intl$format$cache$$getMessageFormat(msg, locales, formatOptions);
         chunk.write(formatter.format(params));
         return chunk;
     }
 
-
-    /**
-    Interprets `params.val` as a number to format.
-    @method intlNumber
-    @param {Object} chunk The dust Chunk object.
-    @param {Object} context The dust Context object.
-    @param {Object} bodies An object containing the dust bodies.
-    @param {Object} params An object containing the parameters in the markup for this helper.
-    @return {Object} The `chunk` parameter.
-    */
-    function $$register$with$$intlNumber(chunk, context, bodies, params) {
-        var formatOptions,
-            locales,
-            val,
-            formatter;
-        params = params || {};
-
-        if (!params.hasOwnProperty('val')) {
-            throw new ReferenceError('@intlNumber needs a `val` parameter');
-        }
-        val = $$register$with$$_tap(params.val, chunk, context);
-        delete params.val;  // since params might be interpretted as format options
-
-        formatOptions = $$register$with$$_getFormatOptions('number', chunk, params, context);
-        locales = $$register$with$$_getLocales(chunk, params, context);
-        // TODO:  caching based on key [locales, formatOptions]
-        formatter = new Intl.NumberFormat(locales, formatOptions);
-        chunk.write(formatter.format(val));
-        return chunk;
-    }
-
-
-    /**
-    Interprets `params.val` as a date or time to format.
-    @method intlDate
-    @param {Object} chunk The dust Chunk object.
-    @param {Object} context The dust Context object.
-    @param {Object} bodies An object containing the dust bodies.
-    @param {Object} params An object containing the parameters in the markup for this helper.
-    @return {Object} The `chunk` parameter.
-    */
-    function $$register$with$$intlDate(chunk, context, bodies, params) {
-        var formatOptions,
-            locales,
-            val,
-            formatter;
-        params = params || {};
-
-        if (!params.hasOwnProperty('val')) {
-            throw new ReferenceError('@intlDate needs a `val` parameter');
-        }
-        val = $$register$with$$_tap(params.val, chunk, context);
-        delete params.val;  // since params might be interpretted as format options
-        val = new Date(val).getTime();
-
-        formatOptions = $$register$with$$_getFormatOptions('date', chunk, params, context);
-        locales = $$register$with$$_getLocales(chunk, params, context);
-        // TODO:  caching based on key [locales, formatOptions]
-        formatter = new Intl.DateTimeFormat(locales, formatOptions);
-        chunk.write(formatter.format(val));
-        return chunk;
-    }
-
-
-    /**
-    A block wrapper which stashes the `params` in the context so that
-    they are available for other intl helpers within the block.
-    @method intlMessage
-    @param {Object} chunk The dust Chunk object.
-    @param {Object} context The dust Context object.
-    @param {Object} bodies An object containing the dust bodies.
-    @param {Object} params An object containing the parameters in the markup for this helper.
-    @return {Object} The `chunk` parameter.
-    */
-    function $$register$with$$intl(chunk, context, bodies, params) {
-        var ctx = {};
-        if (bodies.block) {
-            ctx[$$register$with$$CONTEXT_KEY] = params || {};
-            return chunk.render(bodies.block, context.push(ctx));
-        }
-        return chunk;
-    }
-
-    // utility method to register all the helpers
-    function $$register$with$$registerWith (dust) {
-        dust.helpers.intlMessage    = $$register$with$$intlMessage;
-        dust.helpers.intlNumber     = $$register$with$$intlNumber;
-        dust.helpers.intlDate       = $$register$with$$intlDate;
-        dust.helpers.intl           = $$register$with$$intl;
-    }
-
     var src$main$$default = {
-        registerWith: $$register$with$$default
+        registerWith: $$helpers$$registerWith
     };
 
-    this['DustHelperIntl'] = src$main$$default;
+    this['DustIntl'] = src$main$$default;
 }).call(this);
 
-//# sourceMappingURL=helpers.js.map
+//# sourceMappingURL=dust-intl.js.map
