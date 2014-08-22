@@ -3,36 +3,56 @@ module.exports = function (grunt) {
     var libpath = require('path');
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
-        jshint: {
-            all: ['index.js', '*.json', 'lib/*.js', 'tests/*.js']
+        clean: {
+            dist: 'dist/',
+            lib : 'lib/',
+            tmp : 'tmp/'
         },
+
         copy: {
-          lib: {
-            files: [{
-                expand: true,
-                cwd: 'lib/',
-                src: ['*.js'],
-                dest: 'dist/',
-                filter: 'isFile'
-            }]
-          }
+            tmp: {
+                expand : true,
+                flatten: true,
+                src    : 'tmp/src/*.js',
+                dest   : 'lib/'
+            }
         },
+
+        jshint: {
+            all: ['src/*.js', 'tests/*.js']
+        },
+
+        bundle_jsnext: {
+            dest: 'dist/dust-intl.js',
+
+            options: {
+                namespace: 'DustIntl'
+            }
+        },
+
+        cjs_jsnext: {
+            dest: 'tmp/'
+        },
+
         uglify: {
             options: {
                 preserveComments: 'some'
             },
-            helpers: {
-                src: 'dist/helpers.js',
-                dest: 'dist/helpers.min.js'
+
+            dist: {
+                src : 'dist/dust-intl.js',
+                dest: 'dist/dust-intl.min.js'
             }
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-bundle-jsnext-lib');
 
-    grunt.registerTask('build', ['copy', 'uglify',]);
-    grunt.registerTask('default', ['jshint']);
+    grunt.registerTask('default', [
+        'jshint', 'clean', 'bundle_jsnext', 'uglify', 'cjs_jsnext', 'copy'
+    ]);
 };

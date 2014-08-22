@@ -1,10 +1,9 @@
 {
   "name": "dust-helper-intl",
-  "main": "dist/helpers.js",
-  "version": "0.1.1",
+  "main": "dist/dust-intl.js",
+  "version": "1.0.0-rc-1",
   "homepage": "https://github.com/yahoo/dust-helpers-intl",
-  "author": "Drew Folta <drew@folta.net>",
-  "description": "dust helpers for internationalization",
+  "description": "Dust helpers for internationalization.",
   "keywords": [
     "intl",
     "i18n",
@@ -14,14 +13,29 @@
     "type": "git",
     "url": "https://github.com/yahoo/dust-helper-intl.git"
   },
-  "licenses": [{
-    "type": "Yahoo BSD",
-    "url": "https://github.com/yahoo/dust-helper-intl/blob/master/LICENSE"
-  }],
-  "dependencies": {
-    "intl-messageformat": "~0.1.0"
-  },
+  "licenses": [
+    {
+      "type": "Yahoo BSD",
+      "url": "https://github.com/yahoo/dust-helper-intl/blob/master/LICENSE"
+    }
+  ],
   "ignore": [
-    "!dist/*.js"
-  ]
+    "**/.*",
+    "!dist/*.js",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "authors": [
+    "Drew Folta <drew@folta.net>",
+    "Eric Ferraiuolo <eferraiuolo@gmail.com>",
+    "Caridy Patino <caridy@gmail.com>"
+  ],
+  "moduleType": [
+    "es6",
+    "globals",
+    "node"
+  ],
+  "license": "BSD"
 }

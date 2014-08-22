@@ -15,7 +15,6 @@ Dust helpers for internationalization.
 2. Load the scripts into your page.
 
 ```html
-<script src="intl-messageformat.js"></script>
 <script src="dustjs-linkedin.js"></script>
 <script src="dust-helper-intl.js"></script>
 ```
@@ -34,25 +33,13 @@ DustHelperIntl.register(dust);
 
 ```javascript
 var Dust = require('dustjs-linkedin');
-global.Intl = require('intl');
+global.Intl = global.Intl || require('intl');
 require('dust-helper-intl').register(Dust);
 ```
 
 **NOTE:** Since node (as of 0.10) doesn't provide the global `Intl` object
 (ECMA-402) you'll need to provide a polyfill. The `intl` NPM package can
 provide this or you can use another.
-
-
-### AMD
-
-1. Install with [bower](http://bower.io/): `bower install dust-form-helpers`
-3. Load in the module and register it:
-
-```javascript
-define(['dust', 'dust-helper-intl'], function(Dust, DustHelperIntl) {
-    DustHelperIntl.register(Dust);
-});
-```
 
 
 ## Usage
@@ -86,7 +73,7 @@ Template:
 var tmpl = '<time>{@intlDate val=' + timeStamp + ' /}</time>';
 ```
 
-or 
+or
 
 ```js
 var tmpl = '<time>{@intlDate val={timeStamp} /}</time>';
