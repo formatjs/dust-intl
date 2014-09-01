@@ -601,7 +601,7 @@ describe('Helper `formatDate`', function () {
     });
 
     it('should return a formatted string of date and time', function () {
-        var tmpl = '{@intlDate val="' + timeStamp + '" locales="en-US" month="long" day="2-digit" year="numeric" hour="numeric" minute="numeric" timeZone="UTC"/}',
+        var tmpl = '{@formatDate val="' + timeStamp + '" locales="en-US" month="long" day="2-digit" year="numeric" hour="numeric" minute="numeric" timeZone="UTC"/}',
             ctx = {},
             expected = 'January 23 2014 11:00 PM',
             d = new Date(timeStamp);
