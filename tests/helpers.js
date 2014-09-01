@@ -600,6 +600,17 @@ describe('Helper `formatDate`', function () {
         });
     });
 
+    it('should return a formatted string of date and time', function () {
+        var tmpl = '{@intlDate val="' + timeStamp + '" locales="en-US" month="long" day="2-digit" year="numeric" hour="numeric" minute="numeric" timeZone="UTC"/}',
+            ctx = {},
+            expected = 'January 23 2014 11:00 PM',
+            d = new Date(timeStamp);
+        console.log(tmpl);
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
     it('should return a formatted string of just the time using different locales', function () {
         var tmpl = '{@formatDate val=' + timeStamp + ' hour="numeric" minute="numeric" timeZone="UTC" locales="de-DE"/}',
             ctx = {},
