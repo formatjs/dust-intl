@@ -1,5 +1,5 @@
 {
-  "name": "dust-helper-intl",
+  "name": "dust-intl",
   "main": "dist/dust-intl.js",
   "version": "1.0.0-beta-1",
   "homepage": "https://github.com/yahoo/dust-helpers-intl",
@@ -11,12 +11,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/yahoo/dust-helper-intl.git"
+    "url": "https://github.com/yahoo/dust-intl.git"
   },
   "licenses": [
     {
       "type": "Yahoo BSD",
-      "url": "https://github.com/yahoo/dust-helper-intl/blob/master/LICENSE"
+      "url": "https://github.com/yahoo/dust-intl/blob/master/LICENSE"
     }
   ],
   "ignore": [

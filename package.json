@@ -1,8 +1,8 @@
 {
-  "name": "dust-helper-intl",
+  "name": "dust-intl",
   "version": "1.0.0-beta-1",
   "description": "Dust helpers for internationalization.",
-  "homepage": "https://github.com/yahoo/dust-helper-intl",
+  "homepage": "https://github.com/yahoo/dust-intl",
   "keywords": [
     "intl",
     "i18n",
@@ -15,11 +15,11 @@
     "Caridy Patino <caridy@gmail.com>"
   ],
   "bugs": {
-    "url": "https://github.com/yahoo/dust-helper-intl/issues"
+    "url": "https://github.com/yahoo/dust-intl/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:yahoo/dust-helper-intl.git"
+    "url": "git@github.com:yahoo/dust-intl.git"
   },
   "main": "index.js",
   "jsnext:main": "src/main.js",
@@ -48,7 +48,6 @@
     "xunit-file": "0.0.5"
   },
   "scripts": {
-    "pretest": "grunt",
     "test": "istanbul cover -- _mocha tests/ --reporter spec"
   },
   "license": "BSD"
