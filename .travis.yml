@@ -1,9 +1,16 @@
 language: node_js
 node_js:
-- 0.10
+  - '0.10'
+script: npm run travis
 notifications:
-    email:
-        recipients:
-        - mojito-next@yahoo-inc.com
-        on_success: change
-        on_failure: always
+  email:
+    recipients:
+      - mojito-next@yahoo-inc.com
+    on_success: change
+    on_failure: always
+env:
+  global:
+    - secure: pKfInMlawxC/TL71GQdSan/7JsSYjORlNawLOopxJgDig6vPGor06oLJ1nZMo29Wg8dJYEhZj6EjenXJEZHpfKNe11ObZtRSJuoBD3/S4oH01PoB76AMDeLz0s2Ue8B3xQoclHM9YzgHTeJ2dnBMwyVNaFca8ivZCapxVlNX1kI=
+    - secure: O5Sv3HUmCb9Ajt8S/+iqwPRnBenSrupF6J9Wq4LNya4KJLap4Xv8hyOQ2+6jkVPApaj2zLLJQciiglzCurKcr0ysdPa3eS3Z3aCzyaDnDceePWVwtc4CWs4rrYSc+/u2LXAhAdE1+TYuzUtojWZGPWqipetDjAp9gQV0jwD9dr0=
+addons:
+  sauce_connect: true
