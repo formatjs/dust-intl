@@ -24,7 +24,7 @@ Dust helpers for internationalization.
 3. Register the helpers:
 
 ```javascript
-DustIntl.registerWithdust);
+DustIntl.registerWith(Dust);
 ```
 
 
@@ -36,7 +36,7 @@ DustIntl.registerWithdust);
 ```javascript
 var Dust = require('dustjs-linkedin');
 global.Intl = global.Intl || require('intl');
-require('dust-intl').registerWithDust);
+require('dust-intl').registerWith(Dust);
 ```
 
 **NOTE:** Since node (as of 0.10) doesn't provide the global `Intl` object
