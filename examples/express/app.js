@@ -8,7 +8,7 @@ var
 // These are our polyfills.
 global.Intl              = global.Intl || require('intl');
 
-dustIntl = require('../../'); // require('dust-helper-intl');
+dustIntl = require('../../'); // require('dust-intl');
 dustIntl.register(dust);
 
 app.engine('dust', consolidate.dust);

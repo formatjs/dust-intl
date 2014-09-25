@@ -1,9 +1,11 @@
-dust-helper-intl
-================
+Dust Intl
+=========
 
 Dust helpers for internationalization.
 
-[![Build Status](https://travis-ci.org/yahoo/dust-helper-intl.png?branch=master)](https://travis-ci.org/yahoo/dust-helper-intl)
+[![npm Version][npm-badge]][npm]
+[![Build Status][travis-badge]][travis]
+[![Dependency Status][david-badge]][david]
 
 
 ## Installation
@@ -11,30 +13,30 @@ Dust helpers for internationalization.
 
 ### Browser
 
-1. Install with [bower](http://bower.io/): `bower install dust-helper-intl`
+1. Install with [bower](http://bower.io/): `bower install dust-intl`
 2. Load the scripts into your page.
 
 ```html
 <script src="dustjs-linkedin.js"></script>
-<script src="dust-helper-intl.js"></script>
+<script src="dust-intl.js"></script>
 ```
 
 3. Register the helpers:
 
 ```javascript
-DustHelperIntl.register(dust);
+DustIntl.registerWith(Dust);
 ```
 
 
 ### Node/CommonJS
 
-1. You can install the helpers with npm: `npm install dust-helper-intl`
+1. You can install the helpers with npm: `npm install dust-intl`
 2. Load in the module and register it:
 
 ```javascript
 var Dust = require('dustjs-linkedin');
 global.Intl = global.Intl || require('intl');
-require('dust-helper-intl').register(Dust);
+require('dust-intl').registerWith(Dust);
 ```
 
 **NOTE:** Since node (as of 0.10) doesn't provide the global `Intl` object
@@ -337,4 +339,11 @@ Output:
 This software is free to use under the Yahoo! Inc. BSD license.
 See the [LICENSE file][] for license text and copyright information.
 
-[LICENSE file]: https://github.com/yahoo/dust-helper-intl/blob/master/LICENSE
+
+[npm]: https://www.npmjs.org/package/dust-intl
+[npm-badge]: https://img.shields.io/npm/v/dust-intl.svg?style=flat-square
+[travis]: https://travis-ci.org/yahoo/dust-intl
+[travis-badge]: http://img.shields.io/travis/yahoo/dust-intl.svg?style=flat-square
+[david]: https://david-dm.org/yahoo/dust-intl
+[david-badge]: https://img.shields.io/david/yahoo/dust-intl.svg?style=flat-square
+[LICENSE file]: https://github.com/yahoo/dust-intl/blob/master/LICENSE
