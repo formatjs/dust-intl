@@ -5,7 +5,7 @@ script: npm run travis
 notifications:
   email:
     recipients:
-      - mojito-next@yahoo-inc.com
+      - ypt-team@yahoo-inc.com
     on_success: change
     on_failure: always
 env:

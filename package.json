@@ -50,7 +50,7 @@
     "yeti": "^0.2.29"
   },
   "scripts": {
-    "pretest": "grunt",
+    "prepublish": "grunt",
     "test": "istanbul cover -- _mocha tests/ --reporter spec",
     "travis": "istanbul cover -- _mocha tests/ --reporter spec && ./tests/smoke/saucelabs.sh"
   },
