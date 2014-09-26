@@ -1,6 +1,6 @@
 {
   "name": "dust-intl",
-  "version": "1.0.0-beta-2",
+  "version": "1.0.0-rc-1",
   "description": "Dust helpers for internationalization.",
   "homepage": "https://github.com/yahoo/dust-intl",
   "keywords": [
