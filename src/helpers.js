@@ -6,11 +6,9 @@ See the accompanying LICENSE file for terms.
 
 /* jshint esnext: true */
 
-import {
-    getDateTimeFormat,
-    getNumberFormat,
-    getMessageFormat
-} from 'intl-format-cache';
+import IntlMessageFormat from 'intl-messageformat';
+import IntlRelativeFormat from 'intl-relativeformat';
+import createFormatCache from 'intl-format-cache';
 
 import {
     extend,
@@ -20,17 +18,23 @@ import {
     tap
 } from './utils';
 
-export {registerWith};
+export {registerWith, __addLocaleData};
 
 // -----------------------------------------------------------------------------
 
+var getNumberFormat   = createFormatCache(Intl.NumberFormat),
+    getDateTimeFormat = createFormatCache(Intl.DateTimeFormat),
+    getMessageFormat  = createFormatCache(IntlMessageFormat),
+    getRelativeFormat = createFormatCache(IntlRelativeFormat);
+
 function registerWith (dust) {
     extend(dust.helpers, {
-        intl         : intl,
-        formatDate   : formatDate,
-        formatTime   : formatTime,
-        formatNumber : formatNumber,
-        formatMessage: formatMessage
+        intl          : intl,
+        formatDate    : formatDate,
+        formatTime    : formatTime,
+        formatRelative: formatRelative,
+        formatNumber  : formatNumber,
+        formatMessage : formatMessage
     });
 
     // Deprecated helpers (renamed):
@@ -44,9 +48,22 @@ function registerWith (dust) {
 
 function deprecate(name, suggestion) {
     return function () {
-        console.warn('{@' + name + '} is deprecated, use: {@' + suggestion.name + '}');
+        if (typeof console !== 'undefined' &&
+            typeof console.warn === 'function') {
+
+            console.warn(
+                '{@' + name + '} is deprecated, use: ' +
+                '{@' + suggestion.name + '}'
+            );
+        }
+
         return suggestion.apply(this, arguments);
     };
+}
+
+function __addLocaleData(data) {
+    IntlMessageFormat.__addLocaleData(data);
+    IntlRelativeFormat.__addLocaleData(data);
 }
 
 // -- Helpers ------------------------------------------------------------------
@@ -130,6 +147,38 @@ function formatTime(chunk, context, bodies, params) {
     formatOptions = getFormatOptions('time', chunk, params, context);
     locales = getLocales(chunk, params, context);
     formatter = getDateTimeFormat(locales, formatOptions);
+    chunk.write(formatter.format(val));
+    return chunk;
+}
+
+
+/**
+Interprets `params.val` as a date or time to format relative to "now", and uses
+the custom `relative` formats.
+@method formatRelative
+@param {Object} chunk The dust Chunk object.
+@param {Object} context The dust Context object.
+@param {Object} bodies An object containing the dust bodies.
+@param {Object} params An object containing the parameters in the markup for this helper.
+@return {Object} The `chunk` parameter.
+*/
+function formatRelative(chunk, context, bodies, params) {
+    var formatOptions,
+        locales,
+        val,
+        formatter;
+    params = params || {};
+
+    if (!params.hasOwnProperty('val')) {
+        throw new ReferenceError('@formatRelative needs a `val` parameter');
+    }
+    val = tap(params.val, chunk, context);
+    delete params.val;  // since params might be interpretted as format options
+    val = new Date(val).getTime();
+
+    formatOptions = getFormatOptions('date', chunk, params, context);
+    locales = getLocales(chunk, params, context);
+    formatter = getRelativeFormat(locales, formatOptions);
     chunk.write(formatter.format(val));
     return chunk;
 }
