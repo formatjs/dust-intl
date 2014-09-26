@@ -1,7 +1,7 @@
 {
     "name": "express",
     "version": "0.0.0",
-    "description": "an example app of how to use dust-helper-intl in an express app",
+    "description": "an example app of how to use dust-intl in an express app",
     "main": "app.js",
     "author": "Drew Folta <drew@folta.net>",
     "dependencies": {
@@ -14,7 +14,7 @@
     "licenses": [
         {
             "type": "Yahoo BSD",
-            "url": "https://github.com/yahoo/dust-helper-intl/blob/master/LICENSE"
+            "url": "https://github.com/yahoo/dust-intl/blob/master/LICENSE"
         }
     ],
     "scripts": {
