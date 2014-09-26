@@ -25,10 +25,8 @@ if (typeof require === 'function') {
     chai = require('chai');
     Dust = require('dustjs-linkedin');
 
-    intl = require('intl');
-
     if (typeof Intl === 'undefined') {
-        global.Intl = intl;
+        require('intl');
     }
 
     // load in message format
@@ -632,6 +630,94 @@ describe('Helper `formatDate`', function () {
                 MINUTE: 'numeric'
             },
             expected = '11:00 PM',
+            d = new Date(timeStamp);
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+});
+
+
+describe('Helper `formatRelative`', function () {
+    it('should be added to Dust', function () {
+        expect(Dust.helpers).to.include.keys('formatRelative');
+    });
+
+    it('should be a function', function () {
+        expect(Dust.helpers.formatRelative).to.be.a('function');
+    });
+
+    it('should throw if called with out a value', function () {
+        var tmpl = '{@formatRelative /}',
+            expected = new ReferenceError('@formatRelative needs a `val` parameter');
+        Dust.renderSource(tmpl, {}, function (err, out) {
+            expect(err.toString()).to.equal(expected.toString());
+        });
+    });
+
+    it('should return a formatted string relative to "now"', function () {
+        var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
+
+        var tmpl = '{@formatRelative val=' + oneDayAgo + ' locales="en-US" /}',
+            ctx = {},
+            expected = "yesterday";
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string relative to "now" using different locale', function () {
+        var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
+
+        var tmpl = '{@formatRelative val=' + oneDayAgo + ' locales="de-DE" /}',
+            ctx = {},
+            expected = "Gestern"; // de-DE locales
+        Dust.renderSource(tmpl, ctx, function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string relative to "now" using different locale from global context', function () {
+        var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
+
+        var tmpl = '{@formatRelative val=' + oneDayAgo + ' /}',
+            baseCtx = Dust.makeBase({
+                intl: {
+                    locales: 'de-DE'
+                }
+            }),
+            ctx = {},
+            expected = "Gestern"; // de-DE locales
+        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should return a formatted string relative to "now" using different locale from param (if exists) rather than from global context', function () {
+        var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
+
+        var tmpl = '{@formatRelative val=' + oneDayAgo + ' locales="fr-FR" /}',
+            baseCtx = Dust.makeBase({
+                intl: {
+                    locales: 'de-DE'
+                }
+            }),
+            ctx = {},
+            expected = "hier"; // fr-FR locales
+        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+            expect(out).to.equal(expected);
+        });
+    });
+
+    it('should work with format options from context', function () {
+        var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
+
+        var tmpl = '{@formatRelative val=' + oneDayAgo + ' locales="en-US" units=HOUR style="{STYLE}"/}',
+            ctx = {
+                HOUR: 'hour',
+                STYLE: 'numeric'
+            },
+            expected = '24 hours ago',
             d = new Date(timeStamp);
         Dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
