@@ -18,19 +18,21 @@ describe('Handlebars Intl Helper', function () {
     });
 
     it('Formats dates correctly', function (done) {
-        var tmpl = '<time>{@formatDate val="{timeStamp}" weekday="long" year="numeric" timeZone="UTC" locales="es-AR" /}</time>';
+        var tmpl = '<time>{@formatDate val="{timeStamp}" month="long" year="numeric" timeZone="UTC" locales="es-AR" /}</time>';
         var compiled = dust.compile(tmpl, 'test2');
 
         dust.loadSource(compiled);
 
-        var timeStamp = new Date(Date.UTC(2014, 8, 22, 0, 0, 0, 0));
+        var timeStamp = new Date(Date.UTC(2014, 9, 20, 0, 0, 0, 0));
 
         dust.render('test2', { timeStamp: timeStamp }, function (err, out) {
             if (err) {
                 return done(err);
             }
 
-            expect(out).to.equal('<time>2014 lunes</time>');
+            expect(out)
+                .to.contain('octubre')
+                .and.to.contain('2014');
             done();
         });
     });

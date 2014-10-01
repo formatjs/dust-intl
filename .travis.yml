@@ -12,5 +12,3 @@ env:
   global:
     - secure: cxVVyeg7cmwpfS+pqKzZjw27v/RHs8J+QhXYUXUPRyItt4yaJM5z/sNDYKWBxY0MfiKSFyFwJtR1jgjMQXPhDMuv9595AHOSJWxYDZFiZ4kOnz63J70R3CN1zkuoiHkcyfNdwyp/S64KfX5Kunf9KVZ6vNxiSEiHknwji9gkMYE=
     - secure: RFU+0nVWlqirV5EkhKe76xonHmI2PbuzyRRoDmKSfvuSDqJvK0fRUQkVQmfWvFeLFEOXvm7Lte4XpukwqeWilZesDgns722daSOShaKmySd+DikIoXApE/WT/EPaj/bNtzX6biMVIbtMZk81Ti9n/l43rtdjnMpadz7Q1eppkWo=
-addons:
-  sauce_connect: true
