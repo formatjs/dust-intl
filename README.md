@@ -7,6 +7,7 @@ Dust helpers for internationalization.
 [![Build Status][travis-badge]][travis]
 [![Dependency Status][david-badge]][david]
 
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/dust-intl.svg)](https://saucelabs.com/u/dust-intl)
 
 ## Installation
 
