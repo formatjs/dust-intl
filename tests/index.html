@@ -4,20 +4,23 @@
     <title>Browser smoke test</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../node_modules/mocha/mocha.css" />
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
   </head>
   <body>
     <div id="mocha"></div>
-    <script src="../../node_modules/mocha/mocha.js"></script>
-    <script src="../../node_modules/expect.js/index.js"></script>
-    <script src="../../node_modules/intl/Intl.complete.js"></script>
-    <script src="../../node_modules/dustjs-linkedin/dist/dust-full.js"></script>
-    <script src="../../dist/dust-intl.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script src="../node_modules/expect.js/index.js"></script>
+    <script src="../node_modules/async/lib/async.js"></script>
+    <script src="../node_modules/intl/Intl.complete.js"></script>
+    <script src="../node_modules/intl-messageformat/dist/intl-messageformat-with-locales.js"></script>
+    <script src="../node_modules/intl-relativeformat/dist/intl-relativeformat-with-locales.js"></script>
+    <script src="../node_modules/dustjs-linkedin/dist/dust-full.js"></script>
+    <script src="../dist/dust-intl.js"></script>
     <script>
       DustIntl.registerWith(dust);
       mocha.setup('bdd');
     </script>
-    <script src="smoke.js"></script>
+    <script src="helpers.js"></script>
     <script>
     (function () {
       var runner = mocha.run();

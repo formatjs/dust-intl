@@ -5,52 +5,27 @@
  */
 
 /* jshint node:true */
-/* global describe, it, locale, currency */
+/* global describe, it, expect, locale, currency, dust */
 
 'use strict';
 
-var async,
-    chai,
-    expect,
-    Dust,
-    intl,
-    IntlMessageFormat,
-    // Use a fixed known date
-    dateStr = 'Thu Jan 23 2014 18:00:44 GMT-0500 (EST)',
+// Use a fixed known date
+var dateStr = 'Thu Jan 23 2014 18:00:44 GMT-0500 (EST)',
     timeStamp = 1390518044403;
 
-
-if (typeof require === 'function') {
-    async = require('async');
-    chai = require('chai');
-    Dust = require('dustjs-linkedin');
-
-    if (typeof Intl === 'undefined') {
-        require('intl');
-    }
-
-    // load in message format
-    IntlMessageFormat = require('intl-messageformat');
-
-    require('../').registerWith(Dust);
-}
-
-expect = chai.expect;
-
-
 describe('Helper `formatNumber`', function () {
-    it('should be added to Dust', function () {
-        expect(Dust.helpers).to.include.keys('formatNumber');
+    it('should be added to dust', function () {
+        expect(dust.helpers).to.include.keys('formatNumber');
     });
 
     it('should be a function', function () {
-        expect(Dust.helpers.formatNumber).to.be.a('function');
+        expect(dust.helpers.formatNumber).to.be.a('function');
     });
 
     it('should throw if called with out a value', function () {
         var tmpl = '{@formatNumber /}',
             expected = new ReferenceError('@formatNumber needs a `val` parameter');
-        Dust.renderSource(tmpl, {}, function (err, out) {
+        dust.renderSource(tmpl, {}, function (err, out) {
             expect(err.toString()).to.equal(expected.toString());
         });
     });
@@ -59,7 +34,7 @@ describe('Helper `formatNumber`', function () {
         it('should return a string', function () {
             var tmpl = "{@formatNumber val=4 /}",
                 expected = "4";
-            Dust.renderSource(tmpl, {}, function(err, out) {
+            dust.renderSource(tmpl, {}, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -68,7 +43,7 @@ describe('Helper `formatNumber`', function () {
             var tmpl = '{@formatNumber val=NUM /}',
                 ctx = { NUM: 4.004 },
                 expected = "4.004";
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -77,7 +52,7 @@ describe('Helper `formatNumber`', function () {
             var tmpl = '{@formatNumber val=NUM /}',
                 ctx = { NUM: 40000 },
                 expected = "40,000";
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -86,7 +61,7 @@ describe('Helper `formatNumber`', function () {
             var tmpl = '{@formatNumber val=NUM /}',
                 ctx = { NUM: 40000.004 },
                 expected = "40,000.004";
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -98,7 +73,7 @@ describe('Helper `formatNumber`', function () {
                     HUNDREDS: '000'
                 },
                 expected = "40,000";
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -108,7 +83,7 @@ describe('Helper `formatNumber`', function () {
                 var tmpl = '{@formatNumber val=4 locales="de-DE" /}',
                     ctx = {},
                     expected = "4";
-                Dust.renderSource(tmpl, ctx, function(err, out) {
+                dust.renderSource(tmpl, ctx, function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
@@ -117,7 +92,7 @@ describe('Helper `formatNumber`', function () {
                 var tmpl = '{@formatNumber val=NUM locales="de-DE" /}',
                     ctx = { NUM: 4.004 },
                     expected = "4,004";
-                Dust.renderSource(tmpl, ctx, function(err, out) {
+                dust.renderSource(tmpl, ctx, function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
@@ -126,7 +101,7 @@ describe('Helper `formatNumber`', function () {
                 var tmpl = '{@formatNumber val=NUM locales="de-DE" /}',
                     ctx = { NUM: 40000 },
                     expected = "40.000";
-                Dust.renderSource(tmpl, ctx, function(err, out) {
+                dust.renderSource(tmpl, ctx, function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
@@ -135,7 +110,7 @@ describe('Helper `formatNumber`', function () {
                 var tmpl = '{@formatNumber val=NUM locales="de-DE" /}',
                     ctx = { NUM: 40000.004 },
                     expected = "40.000,004";
-                Dust.renderSource(tmpl, ctx, function(err, out) {
+                dust.renderSource(tmpl, ctx, function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
@@ -148,7 +123,7 @@ describe('Helper `formatNumber`', function () {
                         REGION: 'DE'
                     },
                     expected = "40.000,004";
-                Dust.renderSource(tmpl, ctx, function(err, out) {
+                dust.renderSource(tmpl, ctx, function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
@@ -162,14 +137,14 @@ describe('Helper `formatNumber`', function () {
                         NUM: 40000.004
                     },
                     expected = "40.000,004";
-                Dust.renderSource(tmpl, ctx, function(err, out) {
+                dust.renderSource(tmpl, ctx, function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
 
             it('should work with a locale from global context', function() {
                 var tmpl = '{@formatNumber val=NUM /}',
-                    baseCtx = Dust.makeBase({
+                    baseCtx = dust.makeBase({
                         intl: {
                             locales: 'de-DE'
                         }
@@ -178,14 +153,14 @@ describe('Helper `formatNumber`', function () {
                         NUM: 40000.004
                     },
                     expected = "40.000,004";
-                Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+                dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
 
             it('should use locale from param (if exists), rather than global context', function() {
                 var tmpl = '{@formatNumber val=NUM locales="en-US" /}',
-                    baseCtx = Dust.makeBase({
+                    baseCtx = dust.makeBase({
                         intl: {
                             locales: 'de-DE'
                         }
@@ -194,14 +169,14 @@ describe('Helper `formatNumber`', function () {
                         NUM: 40000.004
                     },
                     expected = "40,000.004"; // en-US locale
-                Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+                dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
 
             it('should use locale from explicit context (if exists), rather than global context', function() {
                 var tmpl = '{@formatNumber val=NUM /}',
-                    baseCtx = Dust.makeBase({
+                    baseCtx = dust.makeBase({
                         intl: {
                             locales: 'de-DE'
                         }
@@ -213,7 +188,7 @@ describe('Helper `formatNumber`', function () {
                         NUM: 40000.004
                     },
                     expected = "40,000.004"; // en-US locale
-                Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+                dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
                     expect(out).to.equal(expected);
                 });
             });
@@ -224,22 +199,22 @@ describe('Helper `formatNumber`', function () {
         it('should return a string formatted to currency', function () {
             var name = 'number6',
                 tmpl = '{@formatNumber val=40000 locales="en-US" style="currency" currency=CURRENCY /}';
-            Dust.loadSource(Dust.compile(tmpl, name));
+            dust.loadSource(dust.compile(tmpl, name));
             async.series([
                 function(taskDone) {
-                    Dust.render(name, { CURRENCY: 'USD' }, function(err, out) {
+                    dust.render(name, { CURRENCY: 'USD' }, function(err, out) {
                         expect(out, 'USD').to.equal('$40,000.00');
                         taskDone(err);
                     });
                 },
                 function(taskDone) {
-                    Dust.render(name, { CURRENCY: 'EUR' }, function(err, out) {
+                    dust.render(name, { CURRENCY: 'EUR' }, function(err, out) {
                         expect(out, 'EUR').to.equal('€40,000.00');
                         taskDone(err);
                     });
                 },
                 function(taskDone) {
-                    Dust.render(name, { CURRENCY: 'JPY' }, function(err, out) {
+                    dust.render(name, { CURRENCY: 'JPY' }, function(err, out) {
                         expect(out, 'JPY').to.equal('¥40,000');
                         taskDone(err);
                     });
@@ -252,22 +227,22 @@ describe('Helper `formatNumber`', function () {
         it('should return a string formatted to currency with code', function () {
             var name = 'number7',
                 tmpl = '{@formatNumber val=40000 style="currency" currency=CURRENCY currencyDisplay="code" /}';
-            Dust.loadSource(Dust.compile(tmpl, name));
+            dust.loadSource(dust.compile(tmpl, name));
             async.series([
                 function(taskDone) {
-                    Dust.render(name, { CURRENCY: 'USD' }, function(err, out) {
+                    dust.render(name, { CURRENCY: 'USD' }, function(err, out) {
                         expect(out, 'USD').to.equal('USD40,000.00');
                         taskDone(err);
                     });
                 },
                 function(taskDone) {
-                    Dust.render(name, { CURRENCY: 'EUR' }, function(err, out) {
+                    dust.render(name, { CURRENCY: 'EUR' }, function(err, out) {
                         expect(out, 'EUR').to.equal('EUR40,000.00');
                         taskDone(err);
                     });
                 },
                 function(taskDone) {
-                    Dust.render(name, { CURRENCY: 'JPY' }, function(err, out) {
+                    dust.render(name, { CURRENCY: 'JPY' }, function(err, out) {
                         expect(out, 'JPY').to.equal('JPY40,000');
                         taskDone(err);
                     });
@@ -287,7 +262,7 @@ describe('Helper `formatNumber`', function () {
                     ]
                 },
                 expected = " $3.00 €8.00 ¥10";
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -295,22 +270,22 @@ describe('Helper `formatNumber`', function () {
         it('should return a currency even when using a different locale', function (){
             var name = 'number9',
                 tmpl = '{@formatNumber val=40000 locales="de-DE" style="currency" currency=CURRENCY/}';
-            Dust.loadSource(Dust.compile(tmpl, name));
+            dust.loadSource(dust.compile(tmpl, name));
             async.series([
                 function(taskDone) {
-                    Dust.render(name, { CURRENCY: 'USD' }, function(err, out) {
+                    dust.render(name, { CURRENCY: 'USD' }, function(err, out) {
                         expect(out, 'USD->de-DE').to.equal('40.000,00 $');
                         taskDone(err);
                     });
                 },
                 function(taskDone) {
-                    Dust.render(name, { CURRENCY: 'EUR' }, function(err, out) {
+                    dust.render(name, { CURRENCY: 'EUR' }, function(err, out) {
                         expect(out, 'EUR->de-DE').to.equal('40.000,00 €');
                         taskDone(err);
                     });
                 },
                 function(taskDone) {
-                    Dust.render(name, { CURRENCY: 'JPY' }, function(err, out) {
+                    dust.render(name, { CURRENCY: 'JPY' }, function(err, out) {
                         expect(out, 'JPY->de-DE').to.equal('40.000 ¥');
                         taskDone(err);
                     });
@@ -322,28 +297,28 @@ describe('Helper `formatNumber`', function () {
 
         it('should return a currency even when using a different locale from global context', function (){
             var name = 'number9',
-                baseCtx = Dust.makeBase({
+                baseCtx = dust.makeBase({
                     intl: {
                         locales: 'de-DE'
                     }
                 }),
                 tmpl = '{@formatNumber val=40000 style="currency" currency=CURRENCY/}';
-            Dust.loadSource(Dust.compile(tmpl, name));
+            dust.loadSource(dust.compile(tmpl, name));
             async.series([
                 function(taskDone) {
-                    Dust.render(name, baseCtx.push({ CURRENCY: 'USD' }), function(err, out) {
+                    dust.render(name, baseCtx.push({ CURRENCY: 'USD' }), function(err, out) {
                         expect(out, 'USD->de-DE').to.equal('40.000,00 $');
                         taskDone(err);
                     });
                 },
                 function(taskDone) {
-                    Dust.render(name, baseCtx.push({ CURRENCY: 'EUR' }), function(err, out) {
+                    dust.render(name, baseCtx.push({ CURRENCY: 'EUR' }), function(err, out) {
                         expect(out, 'EUR->de-DE').to.equal('40.000,00 €');
                         taskDone(err);
                     });
                 },
                 function(taskDone) {
-                    Dust.render(name, baseCtx.push({ CURRENCY: 'JPY' }), function(err, out) {
+                    dust.render(name, baseCtx.push({ CURRENCY: 'JPY' }), function(err, out) {
                         expect(out, 'JPY->de-DE').to.equal('40.000 ¥');
                         taskDone(err);
                     });
@@ -355,13 +330,13 @@ describe('Helper `formatNumber`', function () {
 
         it('should return a currency even when using a different locale from param (if exists), rather than locale in global context', function (){
             var name = 'number9',
-                baseCtx = Dust.makeBase({
+                baseCtx = dust.makeBase({
                     intl: {
                         locales: 'de-DE'
                     }
                 }),
                 tmpl = '{@formatNumber val=40000 style="currency" currency=CURRENCY/}';
-            Dust.loadSource(Dust.compile(tmpl, name));
+            dust.loadSource(dust.compile(tmpl, name));
             async.series([
                 function(taskDone) {
                     var ctx = {
@@ -370,7 +345,7 @@ describe('Helper `formatNumber`', function () {
                             locales: 'en-US'
                         }
                     };
-                    Dust.render(name, baseCtx.push(ctx), function(err, out) {
+                    dust.render(name, baseCtx.push(ctx), function(err, out) {
                         expect(out, 'USD->en-US').to.equal('$40,000.00');
                         taskDone(err);
                     });
@@ -382,7 +357,7 @@ describe('Helper `formatNumber`', function () {
                             locales: 'en-US'
                         }
                     };
-                    Dust.render(name, baseCtx.push(ctx), function(err, out) {
+                    dust.render(name, baseCtx.push(ctx), function(err, out) {
                         expect(out, 'EUR->en-US').to.equal('€40,000.00');
                         taskDone(err);
                     });
@@ -394,7 +369,7 @@ describe('Helper `formatNumber`', function () {
                             locales: 'en-US'
                         }
                     };
-                    Dust.render(name, baseCtx.push(ctx), function(err, out) {
+                    dust.render(name, baseCtx.push(ctx), function(err, out) {
                         expect(out, 'JPY->en-US').to.equal('¥40,000');
                         taskDone(err);
                     });
@@ -411,7 +386,7 @@ describe('Helper `formatNumber`', function () {
                     CURRENCY: 'EUR'
                 },
                 expected = "€40,000.00";
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -422,7 +397,7 @@ describe('Helper `formatNumber`', function () {
             var tmpl = '{@formatNumber val=400 style="percent"/}',
                 ctx = {},
                 expected = "40,000%";
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -431,35 +406,35 @@ describe('Helper `formatNumber`', function () {
             var tmpl = '{@formatNumber val=400 locales="de-DE" style="percent"/}',
                 ctx = {},
                 expected = "40.000 %";
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
 
         it('should return a perctage when using a different locale from global context', function () {
             var tmpl = '{@formatNumber val=400 style="percent"/}',
-                baseCtx = Dust.makeBase({
+                baseCtx = dust.makeBase({
                     intl: {
                         locales: 'de-DE'
                     }
                 }),
                 ctx = {},
                 expected = "40.000 %";  // de-DE locales
-            Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+            dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
 
         it('should return a perctage when using a locale from param (if exists), rather than from global context', function () {
             var tmpl = '{@formatNumber val=400 style="percent" locales="fr-FR" /}',
-                baseCtx = Dust.makeBase({
+                baseCtx = dust.makeBase({
                     intl: {
                         locales: 'de-DE'
                     }
                 }),
                 ctx = {},
                 expected = "40 000 %";  // fr-FR locales
-            Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+            dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -468,18 +443,18 @@ describe('Helper `formatNumber`', function () {
 
 
 describe('Helper `formatDate`', function () {
-    it('should be added to Dust', function () {
-        expect(Dust.helpers).to.include.keys('formatDate');
+    it('should be added to dust', function () {
+        expect(dust.helpers).to.include.keys('formatDate');
     });
 
     it('should be a function', function () {
-        expect(Dust.helpers.formatDate).to.be.a('function');
+        expect(dust.helpers.formatDate).to.be.a('function');
     });
 
     it('should throw if called with out a value', function () {
         var tmpl = '{@formatDate /}',
             expected = new ReferenceError('@formatDate needs a `val` parameter');
-        Dust.renderSource(tmpl, {}, function (err, out) {
+        dust.renderSource(tmpl, {}, function (err, out) {
             expect(err.toString()).to.equal(expected.toString());
         });
     });
@@ -488,7 +463,7 @@ describe('Helper `formatDate`', function () {
         var tmpl = '{@formatDate val="' + dateStr + '" locales="en-US" /}',
             ctx = {},
             expected = "1/23/2014";
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -497,35 +472,35 @@ describe('Helper `formatDate`', function () {
         var tmpl = '{@formatDate val="' + dateStr + '" locales="de-DE" /}',
             ctx = {},
             expected = "23.1.2014"; // de-DE locales
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should return a formatted string (date) using different locale from global context', function () {
         var tmpl = '{@formatDate val="' + dateStr + '" /}',
-            baseCtx = Dust.makeBase({
+            baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
                 }
             }),
             ctx = {},
             expected = "23.1.2014"; // de-DE locales
-        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+        dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should return a formatted string (date) using different locale from param (if exists) rather than from global context', function () {
         var tmpl = '{@formatDate val="' + dateStr + '" locales="fr-FR" /}',
-            baseCtx = Dust.makeBase({
+            baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
                 }
             }),
             ctx = {},
             expected = "23/1/2014"; // fr-FR locales
-        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+        dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -534,7 +509,7 @@ describe('Helper `formatDate`', function () {
         var tmpl = '{@formatDate val=' + timeStamp + ' locales="en-US" /}',
             ctx = {},
             expected = "1/23/2014";
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -543,35 +518,35 @@ describe('Helper `formatDate`', function () {
         var tmpl = '{@formatDate val=' + timeStamp + ' locales="de-DE" /}',
             ctx = {},
             expected = "23.1.2014";
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should return a formatted string (time) using different locale from global context', function () {
         var tmpl = '{@formatDate val=' + timeStamp + ' /}',
-            baseCtx = Dust.makeBase({
+            baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
                 }
             }),
             ctx = {},
             expected = "23.1.2014";
-        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+        dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should return a formatted string (time) using different locale from param (if exists) rather than from global context', function () {
         var tmpl = '{@formatDate val=' + timeStamp + ' locales="fr-FR" /}',
-            baseCtx = Dust.makeBase({
+            baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
                 }
             }),
             ctx = {},
             expected = "23/1/2014";
-        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+        dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -581,7 +556,7 @@ describe('Helper `formatDate`', function () {
         var tmpl = '{@formatDate val=DATE year="numeric" /}',
             ctx = { DATE: dateStr },
             expected = "2014";
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -593,7 +568,7 @@ describe('Helper `formatDate`', function () {
             expected = '11:00 PM',
             d = new Date(timeStamp);
         console.log(tmpl);
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -603,14 +578,14 @@ describe('Helper `formatDate`', function () {
             ctx = {},
             expected = '23:00',
             d = new Date(timeStamp);
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should return a formatted string of just the time using different locales from global context', function () {
         var tmpl = '{@formatDate val=' + timeStamp + ' hour="numeric" minute="numeric" timeZone="UTC"/}',
-            baseCtx = Dust.makeBase({
+            baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
                 }
@@ -618,7 +593,7 @@ describe('Helper `formatDate`', function () {
             ctx = {},
             expected = '23:00',
             d = new Date(timeStamp);
-        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+        dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -631,7 +606,7 @@ describe('Helper `formatDate`', function () {
             },
             expected = '11:00 PM',
             d = new Date(timeStamp);
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -639,18 +614,18 @@ describe('Helper `formatDate`', function () {
 
 
 describe('Helper `formatRelative`', function () {
-    it('should be added to Dust', function () {
-        expect(Dust.helpers).to.include.keys('formatRelative');
+    it('should be added to dust', function () {
+        expect(dust.helpers).to.include.keys('formatRelative');
     });
 
     it('should be a function', function () {
-        expect(Dust.helpers.formatRelative).to.be.a('function');
+        expect(dust.helpers.formatRelative).to.be.a('function');
     });
 
     it('should throw if called with out a value', function () {
         var tmpl = '{@formatRelative /}',
             expected = new ReferenceError('@formatRelative needs a `val` parameter');
-        Dust.renderSource(tmpl, {}, function (err, out) {
+        dust.renderSource(tmpl, {}, function (err, out) {
             expect(err.toString()).to.equal(expected.toString());
         });
     });
@@ -661,7 +636,7 @@ describe('Helper `formatRelative`', function () {
         var tmpl = '{@formatRelative val=' + oneDayAgo + ' locales="en-US" /}',
             ctx = {},
             expected = "yesterday";
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -672,7 +647,7 @@ describe('Helper `formatRelative`', function () {
         var tmpl = '{@formatRelative val=' + oneDayAgo + ' locales="de-DE" /}',
             ctx = {},
             expected = "Gestern"; // de-DE locales
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -681,14 +656,14 @@ describe('Helper `formatRelative`', function () {
         var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
 
         var tmpl = '{@formatRelative val=' + oneDayAgo + ' /}',
-            baseCtx = Dust.makeBase({
+            baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
                 }
             }),
             ctx = {},
             expected = "Gestern"; // de-DE locales
-        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+        dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -697,14 +672,14 @@ describe('Helper `formatRelative`', function () {
         var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
 
         var tmpl = '{@formatRelative val=' + oneDayAgo + ' locales="fr-FR" /}',
-            baseCtx = Dust.makeBase({
+            baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
                 }
             }),
             ctx = {},
             expected = "hier"; // fr-FR locales
-        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+        dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -719,7 +694,7 @@ describe('Helper `formatRelative`', function () {
             },
             expected = '24 hours ago',
             d = new Date(timeStamp);
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -727,18 +702,18 @@ describe('Helper `formatRelative`', function () {
 
 
 describe('Helper `formatMessage`', function () {
-    it('should be added to Dust', function () {
-        expect(Dust.helpers).to.include.keys('formatMessage');
+    it('should be added to dust', function () {
+        expect(dust.helpers).to.include.keys('formatMessage');
     });
 
     it('should be a function', function () {
-        expect(Dust.helpers.formatMessage).to.be.a('function');
+        expect(dust.helpers.formatMessage).to.be.a('function');
     });
 
     it('should throw if called with out a value', function () {
         var tmpl = '{@formatMessage /}',
             expected = new ReferenceError('@formatMessage needs either a `_msg` or `_key` parameter');
-        Dust.renderSource(tmpl, {}, function (err, out) {
+        dust.renderSource(tmpl, {}, function (err, out) {
             expect(err.toString()).to.equal(expected.toString());
         });
     });
@@ -751,7 +726,7 @@ describe('Helper `formatMessage`', function () {
                 lastName: 'Pipkin'
             },
             expected = "Hi, my name is Anthony Pipkin.";
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -766,7 +741,7 @@ describe('Helper `formatMessage`', function () {
                 timeZone: 'UTC'
             },
             expected = "Atlanta has a population of 5,475,213 as of January 1, 2010.";
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -781,14 +756,14 @@ describe('Helper `formatMessage`', function () {
                 timeZone: 'UTC'
             },
             expected = "Atlanta has a population of 5.475.213 as of 1. Januar 2010.";
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should return a formatted string with formatted numbers and dates in a different locale from global context', function () {
         var tmpl = '{@formatMessage _msg=POP_MSG city=city population=population census_date=census_date timeZone=timeZone/}',
-            baseCtx = Dust.makeBase({
+            baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
                 }
@@ -801,14 +776,14 @@ describe('Helper `formatMessage`', function () {
                 timeZone: 'UTC'
             },
             expected = "Atlanta has a population of 5.475.213 as of 1. Januar 2010.";
-        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+        dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should return a formatted string with formatted numbers and dates in a different locale from param (if exists) rather than global context', function () {
         var tmpl = '{@formatMessage _msg=POP_MSG locales="fr-FR" city=city population=population census_date=census_date timeZone=timeZone/}',
-            baseCtx = Dust.makeBase({
+            baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
                 }
@@ -821,7 +796,7 @@ describe('Helper `formatMessage`', function () {
                 timeZone: 'UTC'
             },
             expected = "Atlanta has a population of 5 475 213 as of 1 janvier 2010.";   // fr-FR locales
-        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+        dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -836,7 +811,7 @@ describe('Helper `formatMessage`', function () {
                 ]
             },
             expected = " Allison harvested 10 apples. Jeremy harvested 60 apples.";
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -849,7 +824,7 @@ describe('Helper `formatMessage`', function () {
             },
             expected = "Hi, my name is Anthony Pipkin.";
         ctx.MSG = new IntlMessageFormat('Hi, my name is {firstName} {lastName}.');
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -857,12 +832,12 @@ describe('Helper `formatMessage`', function () {
 
 
 describe('Helper `intl`', function () {
-    it('should be added to Dust', function () {
-        expect(Dust.helpers).to.include.keys('intl');
+    it('should be added to dust', function () {
+        expect(dust.helpers).to.include.keys('intl');
     });
 
     it('should be a function', function () {
-        expect(Dust.helpers.intl).to.be.a('function');
+        expect(dust.helpers.intl).to.be.a('function');
     });
 
     it('should maintain a locale', function () {
@@ -870,8 +845,8 @@ describe('Helper `intl`', function () {
             tmpl = '{@formatNumber val=NUM/} {@intl locales="de-DE"}{@formatNumber val=NUM /}{/intl} {@formatNumber val=NUM/}',
             ctx = { NUM: 40000.004 },
             expected = '40,000.004 40.000,004 40,000.004';
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, ctx, function(err, out) {
+        dust.loadSource(dust.compile(tmpl, name));
+        dust.render(name, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -879,15 +854,15 @@ describe('Helper `intl`', function () {
     it('should maintain a locale and fallback to global context', function () {
         var name = 'intl3',
             tmpl = '{@formatNumber val=NUM/} {@intl locales="de-DE"}{@formatNumber val=NUM /}{/intl} {@formatNumber val=NUM/}',
-            baseCtx = Dust.makeBase({
+            baseCtx = dust.makeBase({
                 intl: {
                     locales: 'fr-FR'
                 }
             }),
             ctx = { NUM: 40000.004 },
             expected = '40 000,004 40.000,004 40 000,004';
-        Dust.loadSource(Dust.compile(tmpl, name));
-        Dust.render(name, baseCtx.push(ctx), function(err, out) {
+        dust.loadSource(dust.compile(tmpl, name));
+        dust.render(name, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -896,21 +871,21 @@ describe('Helper `intl`', function () {
         var tmpl = '{@intl locales="de-DE"}{@intl locales="en-US"}{@formatNumber val=NUM/} {/intl}{@formatNumber val=NUM/}{/intl} {@formatNumber val=NUM/}',
             ctx = { NUM: 40000.004 },
             expected = '40,000.004 40.000,004 40,000.004';
-        Dust.renderSource(tmpl, ctx, function(err, out) {
+        dust.renderSource(tmpl, ctx, function(err, out) {
             expect(out).to.equal(expected);
         });
     });
 
     it('should maintain context regardless of depth and fallback to global context', function () {
         var tmpl = '{@intl locales="de-DE"}{@intl locales="en-US"}{@formatNumber val=NUM/} {/intl}{@formatNumber val=NUM/}{/intl} {@formatNumber val=NUM/}',
-            baseCtx = Dust.makeBase({
+            baseCtx = dust.makeBase({
                 intl: {
                     locales: 'fr-FR'
                 }
             }),
             ctx = { NUM: 40000.004 },
             expected = '40,000.004 40.000,004 40 000,004';  // [en-US locales] [de-DE locales] [fr-FR locales from global context]
-        Dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
+        dust.renderSource(tmpl, baseCtx.push(ctx), function(err, out) {
             expect(out).to.equal(expected);
         });
     });
@@ -930,7 +905,7 @@ describe('Helper `intl`', function () {
                     ]
                 },
                 expected = " Allison harvested 1 apple. Jeremy harvested 60 apples.";
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -943,7 +918,7 @@ describe('Helper `intl`', function () {
                 },
                 expected = "Hi, my name is Anthony Pipkin.";
             ctx.intl.messages.salutation = new IntlMessageFormat('Hi, my name is {firstName} {lastName}.');
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -964,7 +939,7 @@ describe('Helper `intl`', function () {
                     NUM: 40000.004
                 },
                 expected = '$40,000.00 €40,000.00 $40,000.00';
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -982,7 +957,7 @@ describe('Helper `intl`', function () {
                 },
                 expected = "11:00 PM",
                 d = new Date(timeStamp);
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
@@ -1005,7 +980,7 @@ describe('Helper `intl`', function () {
                     TZ: 'UTC'
                 },
                 expected = "oranges cost $40,000.00 (or €40,000.00) if ordered by January 23, 2014";
-            Dust.renderSource(tmpl, ctx, function(err, out) {
+            dust.renderSource(tmpl, ctx, function(err, out) {
                 expect(out).to.equal(expected);
             });
         });
