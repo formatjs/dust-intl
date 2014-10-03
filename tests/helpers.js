@@ -15,7 +15,7 @@ var dateStr = 'Thu Jan 23 2014 18:00:44 GMT-0500 (EST)',
 
 describe('Helper `formatNumber`', function () {
     it('should be added to dust', function () {
-        expect(dust.helpers).to.include.keys('formatNumber');
+        expect(dust.helpers).to.have.keys('formatNumber');
     });
 
     it('should be a function', function () {
@@ -444,7 +444,7 @@ describe('Helper `formatNumber`', function () {
 
 describe('Helper `formatDate`', function () {
     it('should be added to dust', function () {
-        expect(dust.helpers).to.include.keys('formatDate');
+        expect(dust.helpers).to.have.keys('formatDate');
     });
 
     it('should be a function', function () {
@@ -615,7 +615,7 @@ describe('Helper `formatDate`', function () {
 
 describe('Helper `formatRelative`', function () {
     it('should be added to dust', function () {
-        expect(dust.helpers).to.include.keys('formatRelative');
+        expect(dust.helpers).to.have.keys('formatRelative');
     });
 
     it('should be a function', function () {
@@ -703,7 +703,7 @@ describe('Helper `formatRelative`', function () {
 
 describe('Helper `formatMessage`', function () {
     it('should be added to dust', function () {
-        expect(dust.helpers).to.include.keys('formatMessage');
+        expect(dust.helpers).to.have.keys('formatMessage');
     });
 
     it('should be a function', function () {
@@ -833,7 +833,7 @@ describe('Helper `formatMessage`', function () {
 
 describe('Helper `intl`', function () {
     it('should be added to dust', function () {
-        expect(dust.helpers).to.include.keys('intl');
+        expect(dust.helpers).to.have.keys('intl');
     });
 
     it('should be a function', function () {
