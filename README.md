@@ -9,6 +9,8 @@ Dust helpers for internationalization.
 
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/dust-intl.svg)](https://saucelabs.com/u/dust-intl)
 
+**This package used to be named `dust-helper-intl`.**
+
 Overview
 --------
 
