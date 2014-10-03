@@ -16,7 +16,7 @@ Overview
 
 * Integrate internationalization features with [Dust][] to lower the barrier for localizing Dust templates.
 
-* Build on current and emerging JavaScript [`Intl`][Intl] standards — architect in a future-focused way.
+* Build on current and emerging JavaScript [`Intl`][Intl] standards — architect in a future-focused way. Leverage industry standards used in other programming langages like [CLDR][] locale data, and [ICU Message syntax][ICU].
 
 * Run in both Node.js and in the browser with a single `<script>` element.
 
@@ -54,7 +54,9 @@ dust.renderSource(template, context, function(err, html) {
 
 * Formats **numbers** and **dates/times**, including those in complex messages using the JavaScript built-ins: [`Intl.NumberFormat`][Intl-NF] and [`Intl.DateTimeFormat`][Intl-DTF], respectively.
 
-* Formats complex messages, including **plural** and **select** arguments using the [Intl MessageFormat][Intl-MF] library which follows [ICU Message][ICU] and [CLDR][CLDR] standards.
+* Formats **relative times** (e.g., "3 hours ago") using the [Intl RelativeFormat][Intl-RF] library which uses [CLDR][] locale data.
+
+* Formats complex messages, including **plural** and **select** arguments using the [Intl MessageFormat][Intl-MF] library which uses [CLDR][] locale data and works with [ICU Message syntax][ICU].
 
 
 Usage
@@ -69,14 +71,46 @@ This package assumes that the [`Intl`][Intl] global object exists in the runtime
 **Luckly, there's the [Intl.js][] polyfill!** You will need to conditionally load the polyfill if you want to support runtimes which `Intl` is not already built-in.
 
 
+#### Loading Intl.js Polyfill in a browser
+
+If the browser does not already have the `Intl` APIs built-in, the Intl.js Polyfill will need to be loaded on the page along with the locale data for any locales that need to be supported:
+
+```html
+<script src="intl/Intl.min.js"></script>
+<script src="intl/locale-data/jsonp/en-US.js"></script>
+```
+
+_Note: Modern browsers already have the `Intl` APIs built-in, so you can load the Intl.js Polyfill conditionally, by for checking for `window.Intl`._
+
+#### Loading Intl.js Polyfill in Node.js
+
+Conditionally require the Intl.js Polyfill if it doesn't already exist in the runtime. As of Node <= 0.10, this polyfill will be required.
+
+```js
+if (!global.Intl) {
+    require('intl');
+}
+```
+
+_Note: When using the Intl.js Polyfill in Node.js, it will automatically load the locale data for all supported locales._
+
+
 ### Registering Helpers in a Browser
 
 First, load Dust and this package onto the page:
 
 ```html
-<script src="http://cdn.jsdelivr.net/dustjs/2.4.0/dust-core.min.js"></script>
-<script src="dust-helper-intl.js"></script>
+<script src="dustjs/dust-core.min.js"></script>
+<script src="dust-intl/dust-intl.min.js"></script>
 ```
+
+By default, Handlebars Intl ships with the locale data for English built-in to the runtime library. When you need to format data in another locale, include its data; e.g., for French:
+
+```html
+<script src="dust-intl/locale-data/fr.js"></script>
+```
+
+_Note: All 150+ locales supported by this package use their root BCP 47 langage tag; i.e., the part before the first hyphen (if any)._
 
 Then, register the helpers with Dust:
 
@@ -97,6 +131,8 @@ var Dust     = require('dustjs-linkedin'),
 
 DustIntl.registerWith(Dust);
 ```
+
+_Note: in Node.js, the data for all 150+ locales is pre-loaded._
 
 
 ### Supplying i18n Data to Dust
@@ -164,8 +200,9 @@ This is used to supply custom format styles and is useful you need supply a set 
         }
     },
 
-    date: {...},
-    time: {...}
+    date    : {...},
+    time    : {...},
+    relative: {...}
 }
 ```
 
@@ -219,14 +256,19 @@ Dust.renderSource(template, context, function(err, html) {
 
 * `val`: `Date` instance or `String` timestamp to format.
 
-* `formatName`: Optional String path to a predefined format on [`data.intl.formats.date`](#dataintlformats). The format's values are merged with other parameters.
+* `[format]`: Optional String path to a predefined format on [`context.intl.formats`](#contextintlformats). The format's values are merged with other parameters.
 
 Other parameters passed to this helper become the `options` argument when the [`Intl.DateTimeFormat`][Intl-DTF] instance is created.
 
 
 #### `{@formatTime}`
 
-This delegates to the `{@formatDate}` helper, but first it will reference any `formatName` from [`context.intl.formats.time`](#dataintlformats).
+This delegates to the `{@formatDate}` helper, but first it will reference any `formatName` from [`context.intl.formats.time`](#contextintlformats).
+
+
+#### `{@formatRelative}`
+
+TODO
 
 
 #### `{@formatNumber}`
@@ -244,6 +286,7 @@ var context = {
     },
     price = 100
 };
+
 Dust.renderSource(template, context, function(err, html) {
     console.log(html); // => "$100.00"
 });
@@ -253,7 +296,7 @@ Dust.renderSource(template, context, function(err, html) {
 
 * `val`: `Number` to format.
 
-* `formatName`: Optional String path to a predefined format on [`data.intl.formats.number`](#dataintlformats). The format's values are merged with other parameters.
+* `[format]`: Optional String path to a predefined format on [`context.intl.formats`](#contextintlformats). The format's values are merged with other parameters.
 
 Other parameters passed to this helper become the `options` argument when the [`Intl.NumberFormat`][Intl-NF] instance is created.
 
@@ -264,9 +307,9 @@ Formats [ICU Message][ICU] strings with the given values supplied as the hash ar
 
 ```
 You have {numPhotos, plural,
-    0= {no photos}
-    1= {one photo}
-    other {# photos}}.
+    =0 {no photos.}
+    =1 {one photo.}
+    other {# photos.}}
 ```
 
 ```dust
