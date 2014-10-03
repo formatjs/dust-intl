@@ -246,7 +246,7 @@ var context = {
     intl: {
         locales: 'en-US'
     },
-    now: Date.now(),
+    now: Date.now()
 };
 
 Dust.renderSource(template, context, function(err, html) {
@@ -270,7 +270,32 @@ This delegates to the `{@formatDate}` helper, but first it will reference any `f
 
 #### `{@formatRelative}`
 
-TODO
+Formats dates relative to "now" using [`IntlRelativeFormat`][Intl-RF], and returns the formatted string value.
+
+```dust
+<p>Posted {@formatRelative val=postDate/}</p>
+```
+
+```js
+var context = {
+    intl: {
+        locales: 'en-US'
+    },
+    postDate: Date.now() - (1000 * 60 * 60 * 24)  // 1 day ago.
+};
+
+Dust.renderSource(template, context, function(err, html) {
+    console.log(html); // => "<p>Posted yesterday</p>"
+});
+```
+
+**Parameters:**
+
+* `val`: `Date` instance or `String` timestamp to format.
+
+* `[format]`: Optional String path to a predefined format on [`context.intl.formats`](#contextintlformats). The format's values are merged with other parameters.
+
+Other parameters passed to this helper become the `options` argument when the [`Intl.DateTimeFormat`][Intl-DTF] instance is created.
 
 
 #### `{@formatNumber}`
