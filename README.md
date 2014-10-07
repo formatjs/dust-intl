@@ -11,8 +11,10 @@ Dust helpers for internationalization.
 
 **This package used to be named `dust-helper-intl`.**
 
+
 Overview
 --------
+
 
 ### Goals
 
@@ -20,7 +22,8 @@ Overview
 
 * Build on current and emerging JavaScript [`Intl`][Intl] standards — architect in a future-focused way. Leverage industry standards used in other programming langages like [CLDR][] locale data, and [ICU Message syntax][ICU].
 
-* Run in both Node.js and in the browser with a single `<script>` element.
+* Run in both Node.js and in the browser.
+
 
 ### How It Works
 
@@ -134,7 +137,7 @@ var Dust     = require('dustjs-linkedin'),
 DustIntl.registerWith(Dust);
 ```
 
-_Note: in Node.js, the data for all 150+ locales is pre-loaded._
+_Note: in Node.js, the data for all 150+ locales is pre-loaded and does not need to be loaded manually._
 
 
 ### Supplying i18n Data to Dust
@@ -164,8 +167,8 @@ Luckily this is a common standard that professional translators should already b
 ```js
 // Static collection of messages, per-locale.
 var MESSAGES = {
-    foo: '{hostName} hosted the party!',
-    bar: 'Pets? We have: {numPets, number, integer}',
+    whoHosted: '{hostName} hosted the party!',
+    petUpsell: 'Pets? We have: {numPets, number, integer}',
     ...
 }
 ```
@@ -182,7 +185,7 @@ var context = {
     ...
 };
 
-Dust.renderSource(template, context, function(err, html) {
+dust.renderSource(template, context, function(err, html) {
     console.log(html);
 });
 ```
