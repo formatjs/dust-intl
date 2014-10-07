@@ -383,12 +383,12 @@ This software is free to use under the Yahoo! Inc. BSD license.
 See the [LICENSE file][LICENSE] for license text and copyright information.
 
 
-[npm]: https://www.npmjs.org/package/dust-helper-intl
-[npm-badge]: https://img.shields.io/npm/v/dust-helper-intl.svg?style=flat
-[travis]: https://travis-ci.org/yahoo/dust-helper-intl
-[travis-badge]: http://img.shields.io/travis/yahoo/dust-helper-intl.svg?style=flat
-[david]: https://david-dm.org/yahoo/dust-helper-intl
-[david-badge]: https://img.shields.io/david/yahoo/dust-helper-intl.svg?style=flat
+[npm]: https://www.npmjs.org/package/dust-intl
+[npm-badge]: https://img.shields.io/npm/v/dust-intl.svg?style=flat-square
+[travis]: https://travis-ci.org/yahoo/dust-intl
+[travis-badge]: http://img.shields.io/travis/yahoo/dust-intl.svg?style=flat-square
+[david]: https://david-dm.org/yahoo/dust-intl
+[david-badge]: https://img.shields.io/david/yahoo/dust-intl.svg?style=flat-square
 [Dust]: http://linkedin.github.io/dustjs/
 [Intl-MF]: https://github.com/yahoo/intl-messageformat
 [Intl]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl
