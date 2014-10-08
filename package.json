@@ -28,9 +28,9 @@
     "npm": ">=1.4.0"
   },
   "dependencies": {
-    "intl-format-cache": "^2.0.0",
-    "intl-messageformat": "1.0.0-rc-6",
-    "intl-relativeformat": "1.0.0-rc-1"
+    "intl-format-cache": "2.0.1",
+    "intl-messageformat": "1.0.1",
+    "intl-relativeformat": "1.0.0"
   },
   "devDependencies": {
     "async": "^0.9.0",
@@ -46,8 +46,8 @@
     "grunt-contrib-copy": "^0.6.0",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-uglify": "^0.6.0",
-    "grunt-extract-cldr-data": "^1.0.0",
-    "grunt-saucelabs": "~8.3.2",
+    "grunt-extract-cldr-data": "1.1.0",
+    "grunt-saucelabs": "^8.3.2",
     "intl": "^0.1.4",
     "istanbul": "^0.3.0",
     "mocha": "^1.21.4",
