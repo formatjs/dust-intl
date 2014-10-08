@@ -1,7 +1,4 @@
-/*global Dust*/
-if (typeof Intl === 'undefined') {
-    require('intl');
-}
+require('intl');
 
 // load in message format
 global.IntlMessageFormat  = require('intl-messageformat');

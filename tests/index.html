@@ -12,10 +12,15 @@
     <script src="../node_modules/expect.js/index.js"></script>
     <script src="../node_modules/async/lib/async.js"></script>
     <script src="../node_modules/intl/Intl.complete.js"></script>
+    <script>
+      // Force use of Intl.js Polyfill to serve as a mock.
+      Intl.NumberFormat   = IntlPolyfill.NumberFormat;
+      Intl.DateTimeFormat = IntlPolyfill.DateTimeFormat;
+    </script>
     <script src="../node_modules/intl-messageformat/dist/intl-messageformat-with-locales.js"></script>
     <script src="../node_modules/intl-relativeformat/dist/intl-relativeformat-with-locales.js"></script>
     <script src="../node_modules/dustjs-linkedin/dist/dust-full.js"></script>
-    <script src="../dist/dust-intl.js"></script>
+    <script src="../dist/dust-intl-with-locales.js"></script>
     <script>
       DustIntl.registerWith(dust);
       mocha.setup('bdd');
