@@ -116,7 +116,7 @@ function getLocales(chunk, params, context) {
     if (params.locales) {
         return tap(params.locales, chunk, context);
     }
-    return contextGet(context, ['intl', 'locales']) || this.locale;
+    return contextGet(context, ['intl', 'locales']);
 }
 
 
