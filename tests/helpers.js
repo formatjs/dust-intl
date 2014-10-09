@@ -34,7 +34,7 @@ describe('Helper `formatNumber`', function () {
 
     describe('used to format numbers', function () {
         it('should return a string', function (done) {
-            var tmpl = "{@formatNumber val=4 /}",
+            var tmpl = '{@formatNumber val="4" /}',
                 expected = "4";
             dust.renderSource(tmpl, {}, function (err, out) {
                 if (err) { return done(err); }
@@ -97,7 +97,7 @@ describe('Helper `formatNumber`', function () {
 
         describe('in another locale', function () {
             it('should return a string', function (done) {
-                var tmpl = '{@formatNumber val=4 locales="de" /}',
+                var tmpl = '{@formatNumber val="4" locales="de" /}',
                     ctx = {},
                     expected = "4";
                 dust.renderSource(tmpl, ctx, function (err, out) {
@@ -242,7 +242,7 @@ describe('Helper `formatNumber`', function () {
     describe('used to format currency', function () {
         it('should return a string formatted to currency', function (done) {
             var name = 'number6',
-                tmpl = '{@formatNumber val=40000 locales="en-US" style="currency" currency=CURRENCY /}';
+                tmpl = '{@formatNumber val="40000" locales="en-US" style="currency" currency=CURRENCY /}';
             dust.loadSource(dust.compile(tmpl, name));
             async.series([
                 function (taskDone) {
@@ -268,7 +268,7 @@ describe('Helper `formatNumber`', function () {
 
         it('should return a string formatted to currency with code', function (done) {
             var name = 'number7',
-                tmpl = '{@formatNumber val=40000 style="currency" currency=CURRENCY currencyDisplay="code" /}';
+                tmpl = '{@formatNumber val="40000" style="currency" currency=CURRENCY currencyDisplay="code" /}';
             dust.loadSource(dust.compile(tmpl, name));
             async.series([
                 function (taskDone) {
@@ -312,7 +312,7 @@ describe('Helper `formatNumber`', function () {
 
         it('should return a currency even when using a different locale', function (done) {
             var name = 'number9',
-                tmpl = '{@formatNumber val=40000 locales="de-DE" style="currency" currency=CURRENCY/}';
+                tmpl = '{@formatNumber val="40000" locales="de-DE" style="currency" currency=CURRENCY/}';
             dust.loadSource(dust.compile(tmpl, name));
             async.series([
                 function (taskDone) {
@@ -343,7 +343,7 @@ describe('Helper `formatNumber`', function () {
                         locales: 'de-DE'
                     }
                 }),
-                tmpl = '{@formatNumber val=40000 style="currency" currency=CURRENCY/}';
+                tmpl = '{@formatNumber val="40000" style="currency" currency=CURRENCY/}';
             dust.loadSource(dust.compile(tmpl, name));
             async.series([
                 function (taskDone) {
@@ -374,7 +374,7 @@ describe('Helper `formatNumber`', function () {
                         locales: 'de-DE'
                     }
                 }),
-                tmpl = '{@formatNumber val=40000 style="currency" currency=CURRENCY/}';
+                tmpl = '{@formatNumber val="40000" style="currency" currency=CURRENCY/}';
             dust.loadSource(dust.compile(tmpl, name));
             async.series([
                 function (taskDone) {
@@ -434,7 +434,7 @@ describe('Helper `formatNumber`', function () {
 
     describe('used to format percentages', function () {
         it('should return a string formatted to a percent', function (done) {
-            var tmpl = '{@formatNumber val=400 style="percent"/}',
+            var tmpl = '{@formatNumber val="400" style="percent"/}',
                 ctx = {},
                 expected = "40,000%";
             dust.renderSource(tmpl, ctx, function (err, out) {
@@ -446,7 +446,7 @@ describe('Helper `formatNumber`', function () {
         });
 
         it('should return a perctage when using a different locale', function (done) {
-            var tmpl = '{@formatNumber val=400 locales="de-DE" style="percent"/}',
+            var tmpl = '{@formatNumber val="400" locales="de-DE" style="percent"/}',
                 ctx = {},
                 expected = "40.000 %";
             dust.renderSource(tmpl, ctx, function (err, out) {
@@ -458,7 +458,7 @@ describe('Helper `formatNumber`', function () {
         });
 
         it('should return a perctage when using a different locale from global context', function (done) {
-            var tmpl = '{@formatNumber val=400 style="percent"/}',
+            var tmpl = '{@formatNumber val="400" style="percent"/}',
                 baseCtx = dust.makeBase({
                     intl: {
                         locales: 'de-DE'
@@ -475,7 +475,7 @@ describe('Helper `formatNumber`', function () {
         });
 
         it('should return a perctage when using a locale from param (if exists), rather than from global context', function (done) {
-            var tmpl = '{@formatNumber val=400 style="percent" locales="fr-FR" /}',
+            var tmpl = '{@formatNumber val="400" style="percent" locales="fr-FR" /}',
                 baseCtx = dust.makeBase({
                     intl: {
                         locales: 'de-DE'
@@ -572,7 +572,7 @@ describe('Helper `formatDate`', function () {
     });
 
     it('should return a formatted string (time)', function (done) {
-        var tmpl = '{@formatDate val=' + timeStamp + ' locales="en-US" /}',
+        var tmpl = '{@formatDate val="' + dateStr + '" locales="en-US" /}',
             ctx = {},
             expected = "1/23/2014";
         dust.renderSource(tmpl, ctx, function (err, out) {
@@ -584,7 +584,7 @@ describe('Helper `formatDate`', function () {
     });
 
     it('should return a formatted string (time) using different locale', function (done) {
-        var tmpl = '{@formatDate val=' + timeStamp + ' locales="de-DE" /}',
+        var tmpl = '{@formatDate val="' + dateStr + '" locales="de-DE" /}',
             ctx = {},
             expected = "23.1.2014";
         dust.renderSource(tmpl, ctx, function (err, out) {
@@ -596,7 +596,7 @@ describe('Helper `formatDate`', function () {
     });
 
     it('should return a formatted string (time) using different locale from global context', function (done) {
-        var tmpl = '{@formatDate val=' + timeStamp + ' /}',
+        var tmpl = '{@formatDate val="' + dateStr + '" /}',
             baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
@@ -613,7 +613,7 @@ describe('Helper `formatDate`', function () {
     });
 
     it('should return a formatted string (time) using different locale from param (if exists) rather than from global context', function (done) {
-        var tmpl = '{@formatDate val=' + timeStamp + ' locales="fr-FR" /}',
+        var tmpl = '{@formatDate val="' + dateStr + '" locales="fr-FR" /}',
             baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
@@ -644,7 +644,7 @@ describe('Helper `formatDate`', function () {
     */
 
     it('should return a formatted string of just the time', function (done) {
-        var tmpl = '{@formatDate val=' + timeStamp + ' locales="en-US" hour="numeric" minute="numeric" timeZone="UTC"/}',
+        var tmpl = '{@formatDate val="' + dateStr + '" locales="en-US" hour="numeric" minute="numeric" timeZone="UTC"/}',
             ctx = {},
             expected = '11:00 PM',
             d = new Date(timeStamp);
@@ -657,7 +657,7 @@ describe('Helper `formatDate`', function () {
     });
 
     it('should return a formatted string of just the time using different locales', function (done) {
-        var tmpl = '{@formatDate val=' + timeStamp + ' hour="numeric" minute="numeric" timeZone="UTC" locales="de-DE"/}',
+        var tmpl = '{@formatDate val="' + dateStr + '" hour="numeric" minute="numeric" timeZone="UTC" locales="de-DE"/}',
             ctx = {},
             expected = '23:00',
             d = new Date(timeStamp);
@@ -670,7 +670,7 @@ describe('Helper `formatDate`', function () {
     });
 
     it('should return a formatted string of just the time using different locales from global context', function (done) {
-        var tmpl = '{@formatDate val=' + timeStamp + ' hour="numeric" minute="numeric" timeZone="UTC"/}',
+        var tmpl = '{@formatDate val="' + dateStr + '" hour="numeric" minute="numeric" timeZone="UTC"/}',
             baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
@@ -688,7 +688,7 @@ describe('Helper `formatDate`', function () {
     });
 
     it('should work with format options from context', function (done) {
-        var tmpl = '{@formatDate val=' + timeStamp + ' locales="en-US" hour=HOUR minute="{MINUTE}" timeZone="UTC"/}',
+        var tmpl = '{@formatDate val="' + dateStr + '" locales="en-US" hour=HOUR minute="{MINUTE}" timeZone="UTC"/}',
             ctx = {
                 HOUR: 'numeric',
                 MINUTE: 'numeric'
@@ -706,6 +706,13 @@ describe('Helper `formatDate`', function () {
 
 
 describe('Helper `formatRelative`', function () {
+    function now() {
+        return new Date().getTime();
+    }
+    function timeToStr(time) {
+        return new Date(time).toUTCString();
+    }
+
     it('should be added to dust', function () {
         expect(dust.helpers).to.have.keys('formatRelative');
     });
@@ -725,9 +732,9 @@ describe('Helper `formatRelative`', function () {
     });
 
     it('should return a formatted string relative to "now"', function (done) {
-        var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
+        var oneDayAgo = timeToStr(now() - (24 * 60 * 60 * 1000));
 
-        var tmpl = '{@formatRelative val=' + oneDayAgo + ' locales="en-US" /}',
+        var tmpl = '{@formatRelative val="' + oneDayAgo + '" locales="en-US" /}',
             ctx = {},
             expected = "yesterday";
         dust.renderSource(tmpl, ctx, function (err, out) {
@@ -739,9 +746,9 @@ describe('Helper `formatRelative`', function () {
     });
 
     it('should return a formatted string relative to "now" using different locale', function (done) {
-        var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
+        var oneDayAgo = timeToStr(now() - (24 * 60 * 60 * 1000));
 
-        var tmpl = '{@formatRelative val=' + oneDayAgo + ' locales="de-DE" /}',
+        var tmpl = '{@formatRelative val="' + oneDayAgo + '" locales="de-DE" /}',
             ctx = {},
             expected = "Gestern"; // de-DE locales
         dust.renderSource(tmpl, ctx, function (err, out) {
@@ -753,9 +760,9 @@ describe('Helper `formatRelative`', function () {
     });
 
     it('should return a formatted string relative to "now" using different locale from global context', function (done) {
-        var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
+        var oneDayAgo = timeToStr(now() - (24 * 60 * 60 * 1000));
 
-        var tmpl = '{@formatRelative val=' + oneDayAgo + ' /}',
+        var tmpl = '{@formatRelative val="' + oneDayAgo + '" /}',
             baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
@@ -772,9 +779,9 @@ describe('Helper `formatRelative`', function () {
     });
 
     it('should return a formatted string relative to "now" using different locale from param (if exists) rather than from global context', function (done) {
-        var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
+        var oneDayAgo = timeToStr(now() - (24 * 60 * 60 * 1000));
 
-        var tmpl = '{@formatRelative val=' + oneDayAgo + ' locales="fr-FR" /}',
+        var tmpl = '{@formatRelative val="' + oneDayAgo + '" locales="fr-FR" /}',
             baseCtx = dust.makeBase({
                 intl: {
                     locales: 'de-DE'
@@ -791,9 +798,9 @@ describe('Helper `formatRelative`', function () {
     });
 
     it('should work with format options from context', function (done) {
-        var oneDayAgo = new Date().getTime() - (24 * 60 * 60 * 1000);
+        var oneDayAgo = timeToStr(now() - (24 * 60 * 60 * 1000));
 
-        var tmpl = '{@formatRelative val=' + oneDayAgo + ' locales="en-US" units=HOUR style="{STYLE}"/}',
+        var tmpl = '{@formatRelative val="' + oneDayAgo + '" locales="en-US" units=HOUR style="{STYLE}"/}',
             ctx = {
                 HOUR: 'hour',
                 STYLE: 'numeric'
@@ -1040,7 +1047,7 @@ describe('Helper `intl`', function () {
                 ctx = {
                     intl: {
                         messages: {
-                            HARVEST_MSG: '{person} harvested {count, plural, one {# apple} other {# apples}}.',
+                            HARVEST_MSG: '{person} harvested {count, plural, one {# apple} other {# apples}}.'
                         }
                     },
                     harvest: [
@@ -1098,7 +1105,7 @@ describe('Helper `intl`', function () {
         });
 
         it('for formatDate', function (done) {
-            var tmpl = '{@intl locales="en-US" formats=intl.formats}{@formatDate val=' + timeStamp + ' formatName="hm" timeZone="UTC"/}{/intl}',
+            var tmpl = '{@intl locales="en-US" formats=intl.formats}{@formatDate val="' + dateStr + '" formatName="hm" timeZone="UTC"/}{/intl}',
                 ctx = {
                     intl: {
                         formats: {
