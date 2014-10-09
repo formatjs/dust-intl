@@ -648,7 +648,6 @@ describe('Helper `formatDate`', function () {
             ctx = {},
             expected = '11:00 PM',
             d = new Date(timeStamp);
-        console.log(tmpl);
         dust.renderSource(tmpl, ctx, function (err, out) {
             if (err) { return done(err); }
 
