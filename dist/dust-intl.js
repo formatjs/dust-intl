@@ -2206,6 +2206,23 @@
     // -----------------------------------------------------------------------------
 
     /**
+     Asserts whether the value is a valid date or timestamp.
+     @protected
+     @method assertIsDate
+     @param {Date|Number} date The date or number value to check.
+     @return {Boolean} whether the `date` is valid, will through if not.
+     */
+    function $$utils$$assertIsDate(date, errMsg) {
+        // Determine if the `date` is valid by checking if it is finite, which is
+        // the same way that `Intl.DateTimeFormat#format()` checks.
+        if (!isFinite(date)) {
+            throw new TypeError(errMsg);
+        }
+
+        return true;
+    }
+
+    /**
      shallow merge of keys from one object to another
      @protected
      @method _extend
@@ -2457,7 +2474,8 @@
         }
         val = $$utils$$tap(params.val, chunk, context);
         delete params.val;  // since params might be interpretted as format options
-        val = new Date(val).getTime();
+        val = new Date(val);
+        $$utils$$assertIsDate(val, '@formatDate requires a valid date or timestamp `val`');
 
         formatOptions = $$utils$$getFormatOptions('date', chunk, params, context);
         locales = $$utils$$getLocales(chunk, params, context);
@@ -2489,7 +2507,8 @@
         }
         val = $$utils$$tap(params.val, chunk, context);
         delete params.val;  // since params might be interpretted as format options
-        val = new Date(val).getTime();
+        val = new Date(val);
+        $$utils$$assertIsDate(val, '@formatTime requires a valid date or timestamp `val`');
 
         formatOptions = $$utils$$getFormatOptions('time', chunk, params, context);
         locales = $$utils$$getLocales(chunk, params, context);
@@ -2521,9 +2540,10 @@
         }
         val = $$utils$$tap(params.val, chunk, context);
         delete params.val;  // since params might be interpretted as format options
-        val = new Date(val).getTime();
+        val = new Date(val);
+        $$utils$$assertIsDate(val, '@formatRelative requires a valid date or timestamp `val`');
 
-        formatOptions = $$utils$$getFormatOptions('date', chunk, params, context);
+        formatOptions = $$utils$$getFormatOptions('relative', chunk, params, context);
         locales = $$utils$$getLocales(chunk, params, context);
         formatter = $$helpers$$getRelativeFormat(locales, formatOptions);
         chunk.write(formatter.format(val));
