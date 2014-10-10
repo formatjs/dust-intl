@@ -7,6 +7,7 @@ See the accompanying LICENSE file for terms.
 /* jshint esnext: true */
 
 export {
+    assertIsDate,
     extend,
     contextGet,
     getFormatOptions,
@@ -15,6 +16,23 @@ export {
 };
 
 // -----------------------------------------------------------------------------
+
+/**
+ Asserts whether the value is a valid date or timestamp.
+ @protected
+ @method assertIsDate
+ @param {Date|Number} date The date or number value to check.
+ @return {Boolean} whether the `date` is valid, will through if not.
+ */
+function assertIsDate(date, errMsg) {
+    // Determine if the `date` is valid by checking if it is finite, which is
+    // the same way that `Intl.DateTimeFormat#format()` checks.
+    if (!isFinite(date)) {
+        throw new TypeError(errMsg);
+    }
+
+    return true;
+}
 
 /**
  shallow merge of keys from one object to another
