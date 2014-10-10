@@ -176,7 +176,7 @@ function formatRelative(chunk, context, bodies, params) {
     delete params.val;  // since params might be interpretted as format options
     val = new Date(val).getTime();
 
-    formatOptions = getFormatOptions('date', chunk, params, context);
+    formatOptions = getFormatOptions('relative', chunk, params, context);
     locales = getLocales(chunk, params, context);
     formatter = getRelativeFormat(locales, formatOptions);
     chunk.write(formatter.format(val));

@@ -814,6 +814,33 @@ describe('Helper `formatRelative`', function () {
             done();
         });
     });
+
+    it('should work with a named format from context', function (done) {
+        var twoDaysAgo = timeToStr(now() - (2 * 24 * 60 * 60 * 1000));
+
+        var tmpl = '{@formatRelative val="' + twoDaysAgo + '" formatName="hours" /}';
+
+        var context = {
+            intl: {
+                locales: 'en-US',
+                formats: {
+                    relative: {
+                        hours: {
+                            units: 'hour',
+                            style: 'numeric'
+                        }
+                    }
+                }
+            }
+        };
+
+        dust.renderSource(tmpl, context, function (err, out) {
+            if (err) { return done(err); }
+
+            expect(out).to.equal('48 hours ago');
+            done();
+        });
+    });
 });
 
 
