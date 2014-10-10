@@ -3,3 +3,4 @@ tests/
 tmp/
 .travis.yml
 Gruntfile.js
+saucelabs.sh
