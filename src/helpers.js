@@ -11,6 +11,7 @@ import IntlRelativeFormat from 'intl-relativeformat';
 import createFormatCache from 'intl-format-cache';
 
 import {
+    assertIsDate,
     extend,
     contextGet,
     getFormatOptions,
@@ -110,7 +111,8 @@ function formatDate(chunk, context, bodies, params) {
     }
     val = tap(params.val, chunk, context);
     delete params.val;  // since params might be interpretted as format options
-    val = new Date(val).getTime();
+    val = new Date(val);
+    assertIsDate(val, '@formatDate requires a valid date or timestamp `val`');
 
     formatOptions = getFormatOptions('date', chunk, params, context);
     locales = getLocales(chunk, params, context);
@@ -142,7 +144,8 @@ function formatTime(chunk, context, bodies, params) {
     }
     val = tap(params.val, chunk, context);
     delete params.val;  // since params might be interpretted as format options
-    val = new Date(val).getTime();
+    val = new Date(val);
+    assertIsDate(val, '@formatTime requires a valid date or timestamp `val`');
 
     formatOptions = getFormatOptions('time', chunk, params, context);
     locales = getLocales(chunk, params, context);
@@ -174,7 +177,8 @@ function formatRelative(chunk, context, bodies, params) {
     }
     val = tap(params.val, chunk, context);
     delete params.val;  // since params might be interpretted as format options
-    val = new Date(val).getTime();
+    val = new Date(val);
+    assertIsDate(val, '@formatRelative requires a valid date or timestamp `val`');
 
     formatOptions = getFormatOptions('date', chunk, params, context);
     locales = getLocales(chunk, params, context);

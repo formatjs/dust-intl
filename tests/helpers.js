@@ -5,7 +5,7 @@
  */
 
 /* jshint node:true */
-/* global describe, it, expect, locale, currency, dust, async, IntlMessageFormat, IntlRelativeFormat */
+/* global describe, it, expect, locale, currency, dust, async. Intl, IntlMessageFormat, IntlRelativeFormat */
 
 'use strict';
 
@@ -513,6 +513,16 @@ describe('Helper `formatDate`', function () {
         });
     });
 
+    it('should throw if called with an invalid date value', function (done) {
+        var tmpl = '{@formatDate val="some garbage!" /}',
+            expected = new TypeError('@formatDate requires a valid date or timestamp `val`');
+        dust.renderSource(tmpl, {}, function (err, out) {
+            expect(err).to.be.a(TypeError);
+            expect(err.toString()).to.equal(expected.toString());
+            done();
+        });
+    });
+
     it('should return a formatted string (date)', function (done) {
         var tmpl = '{@formatDate val="' + dateStr + '" locales="en-US" /}',
             ctx = {},
@@ -702,6 +712,18 @@ describe('Helper `formatDate`', function () {
             done();
         });
     });
+
+    it('should work to format the epoch date', function (done) {
+        var tmpl = '{@formatDate val="' + new Date(0) + '" locales="en-US" /}',
+            ctx = {},
+            expected = new Intl.DateTimeFormat('en-US').format(0);
+        dust.renderSource(tmpl, ctx, function (err, out) {
+            if (err) { return done(err); }
+
+            expect(out).to.equal(expected);
+            done();
+        });
+    });
 });
 
 
@@ -726,6 +748,16 @@ describe('Helper `formatRelative`', function () {
             expected = new ReferenceError('@formatRelative needs a `val` parameter');
         dust.renderSource(tmpl, {}, function (err, out) {
             expect(err).to.be.a(ReferenceError);
+            expect(err.toString()).to.equal(expected.toString());
+            done();
+        });
+    });
+
+    it('should throw if called with an invalid date value', function (done) {
+        var tmpl = '{@formatRelative val="some garbage!" /}',
+            expected = new TypeError('@formatRelative requires a valid date or timestamp `val`');
+        dust.renderSource(tmpl, {}, function (err, out) {
+            expect(err).to.be.a(TypeError);
             expect(err.toString()).to.equal(expected.toString());
             done();
         });
