@@ -54,7 +54,7 @@ module.exports = function (grunt) {
                 options: {
                     prelude: [
                         '// GENERATED FILE',
-                        'var DustIntl = require("./helpers");\n\n'
+                        'var DustIntl = require("./dust-intl");\n\n'
                     ].join('\n'),
 
                     wrapEntry: function (entry) {

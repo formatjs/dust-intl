@@ -23,6 +23,10 @@
   },
   "main": "index.js",
   "jsnext:main": "src/main.js",
+  "browser": {
+    "./lib/locales": false,
+    "./lib/locales.js": false
+  },
   "engines": {
     "node": ">=0.10.0",
     "npm": ">=1.4.0"

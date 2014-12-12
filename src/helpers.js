@@ -17,9 +17,9 @@ import {
     getFormatOptions,
     getLocales,
     tap
-} from './utils';
+} from './utils.js';
 
-export {registerWith, __addLocaleData};
+export {registerWith};
 
 // -----------------------------------------------------------------------------
 
@@ -60,11 +60,6 @@ function deprecate(name, suggestion) {
 
         return suggestion.apply(this, arguments);
     };
-}
-
-function __addLocaleData(data) {
-    IntlMessageFormat.__addLocaleData(data);
-    IntlRelativeFormat.__addLocaleData(data);
 }
 
 // -- Helpers ------------------------------------------------------------------
