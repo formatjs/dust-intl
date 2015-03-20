@@ -917,7 +917,7 @@ describe('Helper `formatMessage`', function () {
                 MSG: 'Hi, my name is {name}.',
                 name: '<b>Eric</b>'
             },
-            expected = 'Hi, my name is &lt;b&gt;Eric&lt;/b&gt;';
+            expected = 'Hi, my name is &lt;b&gt;Eric&lt;/b&gt;.';
         dust.renderSource(tmpl, ctx, function (err, out) {
             if (err) { return done(err); }
 
