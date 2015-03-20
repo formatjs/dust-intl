@@ -911,6 +911,21 @@ describe('Helper `formatMessage`', function () {
         });
     });
 
+    it('should return a escape HTML values', function (done) {
+        var tmpl = '{@formatMessage _msg=MSG name=name /}',
+            ctx = {
+                MSG: 'Hi, my name is {name}.',
+                name: '<b>Eric</b>'
+            },
+            expected = 'Hi, my name is &lt;b&gt;Eric&lt;/b&gt;';
+        dust.renderSource(tmpl, ctx, function (err, out) {
+            if (err) { return done(err); }
+
+            expect(out).to.equal(expected);
+            done();
+        });
+    });
+
     it('should return a formatted string with formatted numbers and dates', function (done) {
         var tmpl = '{@formatMessage _msg=POP_MSG locales="en-US" city=city population=population census_date=census_date timeZone=timeZone/}',
             ctx = {
