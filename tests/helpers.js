@@ -873,8 +873,13 @@ describe('Helper `formatRelative`', function () {
     });
 
     it('should accept a `now` option', function (done) {
-        var tmpl     = '{@formatRelative val=2000 now=1000 locales="en-US" /}';
-        var ctx      = {};
+        var tmpl = '{@formatRelative val=date now=now locales="en-US" /}';
+
+        var ctx = {
+            date: new Date(2000),
+            now : new Date(1000)
+        };
+
         var expected = 'in 1 second';
 
         dust.renderSource(tmpl, ctx, function (err, out) {
@@ -886,8 +891,13 @@ describe('Helper `formatRelative`', function () {
     });
 
     it('should format the epoch timestamp', function (done) {
-        var tmpl     = '{@formatRelative val=0 now=1000 locales="en-US" /}';
-        var ctx      = {};
+        var tmpl = '{@formatRelative val=date now=now locales="en-US" /}';
+
+        var ctx = {
+            date: new Date(0),
+            now : new Date(1000)
+        };
+
         var expected = '1 second ago';
 
         dust.renderSource(tmpl, ctx, function (err, out) {
