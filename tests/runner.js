@@ -1,12 +1,16 @@
+/* global Intl, IntlPolyfill, dust */
+/* jshint node:true */
+'use strict';
+
+// Force use of Intl.js Polyfill to serve as a mock.
 require('intl');
+Intl.NumberFormat   = IntlPolyfill.NumberFormat;
+Intl.DateTimeFormat = IntlPolyfill.DateTimeFormat;
 
-// load in message format
-global.IntlMessageFormat  = require('intl-messageformat');
-global.IntlRelativeFormat = require('intl-relativeformat');
-
-global.dust   = require('dustjs-linkedin');
-global.async  = require('async');
-global.expect = require('expect.js');
+global.IntlMessageFormat = require('intl-messageformat');
+global.dust              = require('dustjs-linkedin');
+global.async             = require('async');
+global.expect            = require('expect.js');
 
 require('../').registerWith(dust);
 

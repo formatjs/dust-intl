@@ -32,30 +32,32 @@
     "npm": ">=1.4.0"
   },
   "dependencies": {
-    "intl-format-cache": "2.0.2",
-    "intl-messageformat": "1.0.2",
-    "intl-relativeformat": "1.0.1"
+    "intl-format-cache": "2.0.4",
+    "intl-messageformat": "1.1.0",
+    "intl-relativeformat": "1.1.0"
   },
   "devDependencies": {
     "async": "^0.9.0",
-    "chai": "^1.9.1",
+    "chai": "^2.1.2",
     "dustjs-linkedin": "^2.4.0",
     "expect.js": "^0.3.1",
     "grunt": "^0.4.5",
-    "grunt-bundle-jsnext-lib": "^0.4.1",
+    "grunt-browserify": "^3.5.1",
+    "grunt-bundle-jsnext-lib": "^0.5.0",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-concat": "^0.5.0",
     "grunt-contrib-connect": "^0.9.0",
-    "grunt-contrib-copy": "^0.7.0",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-uglify": "^0.6.0",
-    "grunt-extract-cldr-data": "1.1.0",
+    "grunt-contrib-copy": "^0.8.0",
+    "grunt-contrib-jshint": "^0.11.1",
+    "grunt-contrib-uglify": "^0.8.0",
+    "grunt-extract-cldr-data": "2.1.1",
+    "grunt-json-remove-fields": "git://github.com/ericf/grunt-json-remove-fields#improve-files-and-output",
     "grunt-saucelabs": "^8.3.2",
     "intl": "^0.1.4",
     "istanbul": "^0.3.0",
     "mocha": "^2.0.1",
-    "xunit-file": "0.0.5"
+    "xunit-file": "0.0.6"
   },
   "scripts": {
     "prepublish": "grunt",

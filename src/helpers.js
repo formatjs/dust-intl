@@ -160,24 +160,24 @@ function registerWith (dust) {
     @return {Object} The `chunk` parameter.
     */
     function formatRelative(chunk, context, bodies, params) {
-        var formatOptions,
-            locales,
-            val,
-            formatter;
         params = params || {};
 
         if (!params.hasOwnProperty('val')) {
             throw new ReferenceError('@formatRelative needs a `val` parameter');
         }
-        val = tap(params.val, chunk, context);
-        delete params.val;  // since params might be interpretted as format options
-        val = new Date(val);
-        assertIsDate(val, '@formatRelative requires a valid date or timestamp `val`');
 
-        formatOptions = getFormatOptions('relative', chunk, params, context);
-        locales = getLocales(chunk, params, context);
-        formatter = getRelativeFormat(locales, formatOptions);
-        chunk.write(dust.escapeHtml(formatter.format(val)));
+        var val = new Date(tap(params.val, chunk, context));
+        assertIsDate(val, '@formatRelative requires a valid date or timestamp `val`');
+        delete params.val;  // since params might be interpreted as format options
+
+        var now = tap(params.now, chunk, context);
+        delete params.now;
+
+        var formatOptions = getFormatOptions('relative', chunk, params, context);
+        var locales       = getLocales(chunk, params, context);
+        var formatter     = getRelativeFormat(locales, formatOptions);
+
+        chunk.write(dust.escapeHtml(formatter.format(val, {now: now})));
         return chunk;
     }
 
