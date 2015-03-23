@@ -493,7 +493,6 @@ describe('Helper `formatNumber`', function () {
     });
 });
 
-
 describe('Helper `formatDate`', function () {
     it('should be added to dust', function () {
         expect(dust.helpers).to.have.keys('formatDate');
@@ -726,7 +725,6 @@ describe('Helper `formatDate`', function () {
     });
 });
 
-
 describe('Helper `formatRelative`', function () {
     function now() {
         return new Date().getTime();
@@ -873,8 +871,33 @@ describe('Helper `formatRelative`', function () {
             done();
         });
     });
-});
 
+    it('should accept a `now` option', function (done) {
+        var tmpl     = '{@formatRelative val=2000 now=1000 locales="en-US" /}';
+        var ctx      = {};
+        var expected = 'in 1 second';
+
+        dust.renderSource(tmpl, ctx, function (err, out) {
+            if (err) { return done(err); }
+
+            expect(out).to.equal(expected);
+            done();
+        });
+    });
+
+    it('should format the epoch timestamp', function (done) {
+        var tmpl     = '{@formatRelative val=0 now=1000 locales="en-US" /}';
+        var ctx      = {};
+        var expected = '1 second ago';
+
+        dust.renderSource(tmpl, ctx, function (err, out) {
+            if (err) { return done(err); }
+
+            expect(out).to.equal(expected);
+            done();
+        });
+    });
+});
 
 describe('Helper `formatMessage`', function () {
     it('should be added to dust', function () {
@@ -1041,8 +1064,22 @@ describe('Helper `formatMessage`', function () {
             done();
         });
     });
-});
 
+    it('should return a formatted `selectordinal` message', function (done) {
+        var tmpl = '{@formatMessage _msg=MSG year=year /}',
+            ctx = {
+                MSG: 'This is my {year, selectordinal, one{#st} two{#nd} few{#rd} other{#th}} birthday.',
+                year: 3
+            },
+            expected = "This is my 3rd birthday.";
+        dust.renderSource(tmpl, ctx, function (err, out) {
+            if (err) { return done(err); }
+
+            expect(out).to.equal(expected);
+            done();
+        });
+    });
+});
 
 describe('Helper `intl`', function () {
     it('should be added to dust', function () {
