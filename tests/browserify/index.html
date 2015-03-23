@@ -18,10 +18,13 @@
     <script src="../../node_modules/expect.js/index.js"></script>
     <script src="../../node_modules/async/lib/async.js"></script>
     <script src="../../node_modules/intl-messageformat/dist/intl-messageformat-with-locales.js"></script>
+    <script src="../../node_modules/dustjs-linkedin/dist/dust-full.js"></script>
+    <script src="../../tmp/browserify/app.js"></script>
     <script>
+      DustIntl.registerWith(dust);
       mocha.setup('bdd');
     </script>
-    <script src="../../tmp/browserify/app.js"></script>
+    <script src="../helpers.js"></script>
     <script>
     (function () {
       var runner = mocha.run();
