@@ -5,7 +5,7 @@
  */
 
 /* jshint node:true */
-/* global describe, it, expect, locale, currency, dust, async, Intl, IntlMessageFormat, IntlRelativeFormat */
+/* global describe, it, expect, dust, async, Intl, IntlMessageFormat */
 
 'use strict';
 

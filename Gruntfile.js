@@ -12,16 +12,20 @@ module.exports = function (grunt) {
         copy: {
             tmp: {
                 expand : true,
-                flatten: true,
-                src    : 'tmp/src/*.js',
-                dest   : 'lib/'
+                cwd   : 'tmp/src/',
+                src   : '**/*.js',
+                dest  : 'lib/'
             }
         },
 
         concat: {
             dist_with_locales: {
                 src: ['dist/dust-intl.js', 'dist/locale-data/*.js'],
-                dest: 'dist/dust-intl-with-locales.js'
+                dest: 'dist/dust-intl-with-locales.js',
+
+                options: {
+                    sourceMap: true
+                }
             }
         },
 
@@ -78,7 +82,8 @@ module.exports = function (grunt) {
             dest: 'dist/dust-intl.js',
 
             options: {
-                namespace: 'DustIntl'
+                namespace : 'DustIntl',
+                sourceRoot: 'dust-intl/'
             }
         },
 
@@ -88,14 +93,15 @@ module.exports = function (grunt) {
 
         uglify: {
             options: {
-                preserveComments: 'some'
+                preserveComments       : 'some',
+                sourceMap              : true,
+                sourceMapRoot          : 'dust-intl/',
+                sourceMapIncludeSources: true
             },
 
             dist: {
                 options: {
-                    sourceMap              : true,
-                    sourceMapIn            : 'dist/dust-intl.js.map',
-                    sourceMapIncludeSources: true
+                    sourceMapIn: 'dist/dust-intl.js.map'
                 },
 
                 files: {
@@ -106,11 +112,32 @@ module.exports = function (grunt) {
             },
 
             dist_with_locales: {
+                options: {
+                    sourceMapIn: 'dist/dust-intl-with-locales.js.map'
+                },
+
                 files: {
                     'dist/dust-intl-with-locales.min.js': [
                         'dist/dust-intl-with-locales.js'
                     ]
                 }
+            }
+        },
+
+        json_remove_fields: {
+            min_source_maps: {
+                options: {
+                    fields: ['sourceRoot']
+                },
+
+                src: 'dist/*.min.js.map'
+            }
+        },
+
+        browserify: {
+            test: {
+                src : 'tests/browserify/app.js',
+                dest: 'tmp/browserify/app.js'
             }
         },
 
@@ -126,7 +153,11 @@ module.exports = function (grunt) {
         'saucelabs-mocha': {
             all: {
                 options: {
-                    urls: ['http://127.0.0.1:9999/tests/index.html'],
+                    urls: [
+                        'http://127.0.0.1:9999/tests/index.html',
+                        'http://127.0.0.1:9999/tests/browserify/index.html'
+                    ],
+
                     build: process.env.TRAVIS_BUILD_NUMBER,
                     sauceConfig: {
                         'record-video': false,
@@ -197,12 +228,15 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-bundle-jsnext-lib');
     grunt.loadNpmTasks('grunt-extract-cldr-data');
+    grunt.loadNpmTasks('grunt-json-remove-fields');
     grunt.loadNpmTasks('grunt-saucelabs');
     grunt.loadNpmTasks('grunt-contrib-connect');
 
     grunt.registerTask('sauce', [
+        'browserify',
         'connect',
         'saucelabs-mocha'
     ]);
@@ -214,6 +248,7 @@ module.exports = function (grunt) {
         'bundle_jsnext',
         'concat:dist_with_locales',
         'uglify',
+        'json_remove_fields',
         'cjs_jsnext',
         'copy:tmp'
     ]);
