@@ -782,7 +782,7 @@ describe('Helper `formatRelative`', function () {
 
         var tmpl = '{@formatRelative val="' + oneDayAgo + '" locales="de-DE" /}',
             ctx = {},
-            expected = "Gestern"; // de-DE locales
+            expected = "gestern"; // de-DE locales
         dust.renderSource(tmpl, ctx, function (err, out) {
             if (err) { return done(err); }
 
@@ -801,7 +801,7 @@ describe('Helper `formatRelative`', function () {
                 }
             }),
             ctx = {},
-            expected = "Gestern"; // de-DE locales
+            expected = "gestern"; // de-DE locales
         dust.renderSource(tmpl, baseCtx.push(ctx), function (err, out) {
             if (err) { return done(err); }
 
