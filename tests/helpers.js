@@ -10,7 +10,7 @@
 'use strict';
 
 // Use a fixed known date
-var dateStr = 'Thu Jan 23 2014 18:00:44 GMT-0500 (EST)',
+var dateStr = 'Thu Jan 23 2014 18:00:44 UTC',
     timeStamp = 1390518044403;
 
 describe('Helper `formatNumber`', function () {
@@ -655,7 +655,7 @@ describe('Helper `formatDate`', function () {
     it('should return a formatted string of just the time', function (done) {
         var tmpl = '{@formatDate val="' + dateStr + '" locales="en-US" hour="numeric" minute="numeric" timeZone="UTC"/}',
             ctx = {},
-            expected = '11:00 PM',
+            expected = '6:00 PM',
             d = new Date(timeStamp);
         dust.renderSource(tmpl, ctx, function (err, out) {
             if (err) { return done(err); }
@@ -668,7 +668,7 @@ describe('Helper `formatDate`', function () {
     it('should return a formatted string of just the time using different locales', function (done) {
         var tmpl = '{@formatDate val="' + dateStr + '" hour="numeric" minute="numeric" timeZone="UTC" locales="de-DE"/}',
             ctx = {},
-            expected = '23:00',
+            expected = '18:00',
             d = new Date(timeStamp);
         dust.renderSource(tmpl, ctx, function (err, out) {
             if (err) { return done(err); }
@@ -686,7 +686,7 @@ describe('Helper `formatDate`', function () {
                 }
             }),
             ctx = {},
-            expected = '23:00',
+            expected = '18:00',
             d = new Date(timeStamp);
         dust.renderSource(tmpl, baseCtx.push(ctx), function (err, out) {
             if (err) { return done(err); }
@@ -702,7 +702,7 @@ describe('Helper `formatDate`', function () {
                 HOUR: 'numeric',
                 MINUTE: 'numeric'
             },
-            expected = '11:00 PM',
+            expected = '6:00 PM',
             d = new Date(timeStamp);
         dust.renderSource(tmpl, ctx, function (err, out) {
             if (err) { return done(err); }
@@ -1236,7 +1236,7 @@ describe('Helper `intl`', function () {
                         }
                     }
                 },
-                expected = "11:00 PM",
+                expected = "6:00 PM",
                 d = new Date(timeStamp);
             dust.renderSource(tmpl, ctx, function (err, out) {
                 if (err) { return done(err); }
